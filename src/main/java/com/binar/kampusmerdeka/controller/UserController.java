@@ -1,5 +1,6 @@
 package com.binar.kampusmerdeka.controller;
 
+import com.binar.kampusmerdeka.dto.MessageModel;
 import com.binar.kampusmerdeka.model.Users;
 import com.binar.kampusmerdeka.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,44 +20,104 @@ public class UserController
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public Users addEmployee(@RequestBody Users user) {
-        return userService.addUser(user);
+    public MessageModel addEmployee(@RequestBody Users user) {
+        MessageModel messageModel = new MessageModel();
+        try {
+            Users userInsert = userService.addUser(user);
+            messageModel.setMessage("SUCCESS ADD NEW USER");
+            messageModel.setStatus(200);
+            messageModel.setData(userInsert);
+        }catch (Exception exception)
+        {
+            messageModel.setMessage("FAILED ADD NEW USER");
+            messageModel.setStatus(500);
+            messageModel.setMessage(exception.getMessage());
+        }
+        return messageModel;
     }
 
     @GetMapping
-    public List<Users> getAllUsers(){
-        return userService.getAllUser();
+    public MessageModel getAllUsers(){
+        MessageModel messageModel = new MessageModel();
+        try {
+            List<Users> userInsert = userService.getAllUser();
+            messageModel.setMessage("SUCCESS GET ALL USER");
+            messageModel.setStatus(200);
+            messageModel.setData(userInsert);
+        }catch (Exception exception)
+        {
+            messageModel.setMessage("FAILED GET ALL USER");
+            messageModel.setStatus(500);
+            messageModel.setMessage(exception.getMessage());
+        }
+        return messageModel;
     }
 
     @GetMapping("/id/{userId}")
-    public Users getUserById(@PathVariable int userId){
-        return userService.getUserById(userId);
+    public MessageModel getUserById(@PathVariable int userId){
+        MessageModel messageModel = new MessageModel();
+        try {
+            Users userInsert = userService.getUserById(userId);
+            messageModel.setMessage("SUCCESS GET USER");
+            messageModel.setStatus(200);
+            messageModel.setData(userInsert);
+        }catch (Exception exception)
+        {
+            messageModel.setMessage("FAILED GET USER");
+            messageModel.setStatus(500);
+            messageModel.setMessage(exception.getMessage());
+        }
+        return messageModel;
     }
 
     @GetMapping("/username/{username}")
-    public List<Users> getUserById(@PathVariable String username){
-        return userService.getUserByUsername(username);
+    public MessageModel getUserById(@PathVariable String username){
+        MessageModel messageModel = new MessageModel();
+        try {
+            List<Users> userInsert = userService.getUserByUsername(username);
+            messageModel.setMessage("SUCCESS GET USER");
+            messageModel.setStatus(200);
+            messageModel.setData(userInsert);
+        }catch (Exception exception)
+        {
+            messageModel.setMessage("FAILED GET USER");
+            messageModel.setStatus(500);
+            messageModel.setMessage(exception.getMessage());
+        }
+        return messageModel;
     }
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<String> updateUser(@PathVariable int userId, @RequestBody Users user) {
+    public MessageModel updateUser(@PathVariable int userId, @RequestBody Users user) {
+        MessageModel messageModel = new MessageModel();
         try {
             userService.updateUser(user, userId);
-            return new ResponseEntity<String>(HttpStatus.OK);
-        }catch(NoSuchElementException ex){
-            System.out.println(ex.getMessage());
-            return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+            messageModel.setMessage("SUCCESS UPDATE USER BY ID : " + userId);
+            messageModel.setStatus(200);
+            messageModel.setData(userService.getUserById(userId));
+        }catch (Exception exception)
+        {
+            messageModel.setMessage("FAILED UPDATE USER BY ID : " + userId);
+            messageModel.setStatus(500);
+            messageModel.setMessage(exception.getMessage());
         }
+        return messageModel;
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable int userId){
+    public MessageModel deleteUser(@PathVariable int userId){
+        MessageModel messageModel = new MessageModel();
         try {
             userService.deleteUser(userId);
-            return new ResponseEntity<String>(HttpStatus.OK);
-        }catch(RuntimeException ex){
-            System.out.println(ex.getMessage());
-            return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+            messageModel.setMessage("SUCCESS DELETE USER BY ID : " + userId);
+            messageModel.setStatus(200);
+            messageModel.setData(null);
+        }catch (Exception exception)
+        {
+            messageModel.setMessage("FAILED DELETE USER BY ID : " + userId);
+            messageModel.setStatus(500);
+            messageModel.setMessage(exception.getMessage());
         }
+        return messageModel;
     }
 }
