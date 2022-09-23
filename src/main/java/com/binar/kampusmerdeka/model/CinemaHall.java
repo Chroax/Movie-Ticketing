@@ -21,4 +21,7 @@ public class CinemaHall
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="cinema_id", nullable = false)//Optional
     private Cinema cinema;
+
+    @OneToOne(mappedBy = "cinemaHall")
+    private Schedules schedules;
 }

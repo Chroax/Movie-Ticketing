@@ -2,8 +2,6 @@ package com.binar.kampusmerdeka.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -35,4 +33,7 @@ public class Films
 
     @ManyToMany
     Set<Genre> genres;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "films")
+    private Set<Schedules> schedules;
 }
