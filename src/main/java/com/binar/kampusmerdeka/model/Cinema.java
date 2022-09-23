@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -24,4 +25,7 @@ public class Cinema {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="city_id", nullable = false)//Optional
     private City city;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cinema")
+    private Set<CinemaHall> cinemaHalls;
 }
