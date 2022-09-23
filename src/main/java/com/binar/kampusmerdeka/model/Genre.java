@@ -18,6 +18,6 @@ public class Genre
     @Column(nullable = false, unique = true, length = 256)
     private String genre_name;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "genres")
     Set<Films> films;
 }

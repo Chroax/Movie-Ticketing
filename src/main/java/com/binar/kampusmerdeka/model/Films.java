@@ -32,6 +32,9 @@ public class Films
     private Date release_date;
 
     @ManyToMany
+    @JoinTable(name = "genres_films",
+            joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
     Set<Genre> genres;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "films")
