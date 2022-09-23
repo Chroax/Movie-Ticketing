@@ -1,7 +1,9 @@
 package com.binar.kampusmerdeka.controller;
 
 import com.binar.kampusmerdeka.dto.MessageModel;
+import com.binar.kampusmerdeka.model.Genre;
 import com.binar.kampusmerdeka.model.Users;
+import com.binar.kampusmerdeka.service.GenreService;
 import com.binar.kampusmerdeka.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,24 +12,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
-public class UserController
+@RequestMapping("/genre")
+public class GenreController
 {
     @Autowired
-    UserService userService;
+    GenreService genreService;
 
-    @PostMapping("/sign-up")
+    @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageModel addEmployee(@RequestBody Users user) {
+    public MessageModel addGenre(@RequestBody Genre genre) {
         MessageModel messageModel = new MessageModel();
         try {
-            Users userInsert = userService.addUser(user);
-            messageModel.setMessage("SUCCESS ADD NEW USER");
+            Genre genreInsert = genreService.addGenre(genre);
+            messageModel.setMessage("SUCCESS ADD NEW GENRE");
             messageModel.setStatus(200);
-            messageModel.setData(userInsert);
+            messageModel.setData(genreInsert);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED ADD NEW USER");
+            messageModel.setMessage("FAILED ADD NEW GENRE");
+            messageModel.setStatus(500);
+            messageModel.setMessage(exception.getMessage());
+        }
+        return messageModel;
+    }
+
+    @PostMapping("/adds")
+    @ResponseStatus(HttpStatus.CREATED)
+    public MessageModel addGenres(@RequestBody List<Genre> genres) {
+        MessageModel messageModel = new MessageModel();
+        try {
+            List<Genre> genresInsert = genreService.addGenres(genres);
+            messageModel.setMessage("SUCCESS ADD NEW GENRE");
+            messageModel.setStatus(200);
+            messageModel.setData(genresInsert);
+        }catch (Exception exception)
+        {
+            messageModel.setMessage("FAILED ADD NEW GENRE");
             messageModel.setStatus(500);
             messageModel.setMessage(exception.getMessage());
         }
@@ -35,84 +55,67 @@ public class UserController
     }
 
     @GetMapping
-    public MessageModel getAllUsers(){
+    public MessageModel getAllGenres(){
         MessageModel messageModel = new MessageModel();
         try {
-            List<Users> usersGet = userService.getAllUser();
-            messageModel.setMessage("SUCCESS GET ALL USER");
+            List<Genre> genresGet = genreService.getAllGenre();
+            messageModel.setMessage("SUCCESS GET ALL GENRE");
             messageModel.setStatus(200);
-            messageModel.setData(usersGet);
+            messageModel.setData(genresGet);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET ALL USER");
+            messageModel.setMessage("FAILED GET ALL GENRE");
             messageModel.setStatus(500);
             messageModel.setMessage(exception.getMessage());
         }
         return messageModel;
     }
 
-    @GetMapping("/id/{userId}")
-    public MessageModel getUserById(@PathVariable int userId){
+    @GetMapping("/id/{genreId}")
+    public MessageModel getGenreById(@PathVariable int genreId){
         MessageModel messageModel = new MessageModel();
         try {
-            Users userGet = userService.getUserById(userId);
-            messageModel.setMessage("SUCCESS GET USER");
+            Genre genreGet= genreService.getGenreById(genreId);
+            messageModel.setMessage("SUCCESS GET GENRE");
             messageModel.setStatus(200);
-            messageModel.setData(userGet);
+            messageModel.setData(genreGet);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET USER");
+            messageModel.setMessage("FAILED GET GENRE");
             messageModel.setStatus(500);
             messageModel.setMessage(exception.getMessage());
         }
         return messageModel;
     }
 
-    @GetMapping("/username/{username}")
-    public MessageModel getUserById(@PathVariable String username){
+    @PutMapping("/update/{genreId}")
+    public MessageModel updateGenre(@PathVariable int genreId, @RequestBody Genre genre) {
         MessageModel messageModel = new MessageModel();
         try {
-            List<Users> usersGet = userService.getUserByUsername(username);
-            messageModel.setMessage("SUCCESS GET USER");
+            genreService.updateGenre(genre, genreId);
+            messageModel.setMessage("SUCCESS UPDATE GENRE BY ID : " + genreId);
             messageModel.setStatus(200);
-            messageModel.setData(usersGet);
+            messageModel.setData(genreService.getGenreById(genreId));
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET USER");
+            messageModel.setMessage("FAILED UPDATE GENRE BY ID : " + genreId);
             messageModel.setStatus(500);
             messageModel.setMessage(exception.getMessage());
         }
         return messageModel;
     }
 
-    @PutMapping("/update/{userId}")
-    public MessageModel updateUser(@PathVariable int userId, @RequestBody Users user) {
+    @DeleteMapping("/{genreId}")
+    public MessageModel deleteGenre(@PathVariable int genreId){
         MessageModel messageModel = new MessageModel();
         try {
-            userService.updateUser(user, userId);
-            messageModel.setMessage("SUCCESS UPDATE USER BY ID : " + userId);
-            messageModel.setStatus(200);
-            messageModel.setData(userService.getUserById(userId));
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("FAILED UPDATE USER BY ID : " + userId);
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
-        }
-        return messageModel;
-    }
-
-    @DeleteMapping("/{userId}")
-    public MessageModel deleteUser(@PathVariable int userId){
-        MessageModel messageModel = new MessageModel();
-        try {
-            userService.deleteUser(userId);
-            messageModel.setMessage("SUCCESS DELETE USER BY ID : " + userId);
+            genreService.deleteGenre(genreId);
+            messageModel.setMessage("SUCCESS DELETE GENRE BY ID : " + genreId);
             messageModel.setStatus(200);
             messageModel.setData(null);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED DELETE USER BY ID : " + userId);
+            messageModel.setMessage("FAILED DELETE GENRE BY ID : " + genreId);
             messageModel.setStatus(500);
             messageModel.setMessage(exception.getMessage());
         }
