@@ -1,9 +1,7 @@
 package com.binar.kampusmerdeka.service.impl;
 
 import com.binar.kampusmerdeka.model.Genre;
-import com.binar.kampusmerdeka.model.Users;
 import com.binar.kampusmerdeka.repository.GenreRepository;
-import com.binar.kampusmerdeka.repository.UserRepository;
 import com.binar.kampusmerdeka.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

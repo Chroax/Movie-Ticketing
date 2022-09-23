@@ -1,5 +1,4 @@
 package com.binar.kampusmerdeka.dto;
-
 import lombok.Getter;
 import lombok.Setter;
 

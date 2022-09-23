@@ -1,7 +1,6 @@
 package com.binar.kampusmerdeka.service;
 
 import com.binar.kampusmerdeka.model.Genre;
-import com.binar.kampusmerdeka.model.Users;
 
 import java.util.List;
 

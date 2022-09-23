@@ -2,9 +2,7 @@ package com.binar.kampusmerdeka.controller;
 
 import com.binar.kampusmerdeka.dto.MessageModel;
 import com.binar.kampusmerdeka.model.Genre;
-import com.binar.kampusmerdeka.model.Users;
 import com.binar.kampusmerdeka.service.GenreService;
-import com.binar.kampusmerdeka.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
