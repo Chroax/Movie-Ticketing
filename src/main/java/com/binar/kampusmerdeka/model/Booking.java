@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -30,4 +31,7 @@ public class Booking
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="user_id", nullable = false)//Optional
     private Users users;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reserveSeatBooking")
+    private Set<ReservationSeat> reservationSeats;
 }

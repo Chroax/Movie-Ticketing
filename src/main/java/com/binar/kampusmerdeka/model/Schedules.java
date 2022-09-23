@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -33,4 +34,7 @@ public class Schedules {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cinema_hall_id", nullable = false)
     private CinemaHall cinemaHall;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reserveSeatSchedule")
+    private Set<ReservationSeat> reservationSeats;
 }
