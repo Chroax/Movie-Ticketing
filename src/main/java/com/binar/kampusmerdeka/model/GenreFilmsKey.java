@@ -8,8 +8,8 @@ import java.io.Serializable;
 public class GenreFilmsKey implements Serializable
 {
     @Column(name = "film_id")
-    private int film_id;
+    private Integer film_id;
 
     @Column(name = "genre_id")
-    private int genre_id;
+    private Integer genre_id;
 }

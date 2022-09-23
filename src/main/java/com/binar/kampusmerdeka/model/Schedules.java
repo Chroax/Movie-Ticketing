@@ -13,10 +13,10 @@ import java.util.Set;
 public class Schedules {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private int schedule_id;
+    private Integer schedule_id;
 
     @Column(nullable = false, precision = 2)
-    private float price;
+    private Float price;
 
     @Column(nullable = false, columnDefinition="TIME WITH TIME ZONE")
     private Date start_film;

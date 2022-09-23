@@ -13,7 +13,7 @@ public class Seats
 {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private int seat_id;
+    private Integer seat_id;
 
     @Column(nullable = false, columnDefinition = "char(3)")
     private String seat_number;

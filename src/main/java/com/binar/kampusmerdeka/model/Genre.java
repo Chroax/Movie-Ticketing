@@ -13,7 +13,7 @@ public class Genre
 {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private int genre_id;
+    private Integer genre_id;
 
     @Column(nullable = false, unique = true, length = 256)
     private String genre_name;

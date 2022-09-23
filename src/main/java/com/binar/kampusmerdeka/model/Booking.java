@@ -16,10 +16,10 @@ public class Booking
 {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private int booking_id;
+    private Integer booking_id;
 
     @Column(nullable = false)
-    private int number_of_seat;
+    private Integer number_of_seat;
 
     @Column(nullable = false)
     private Boolean status;

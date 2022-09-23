@@ -14,7 +14,7 @@ public class CinemaHall
 {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private int cinema_hall_id;
+    private Integer cinema_hall_id;
 
     @Column(nullable = false, columnDefinition = "char(2)")
     private String cinema_hall_name;

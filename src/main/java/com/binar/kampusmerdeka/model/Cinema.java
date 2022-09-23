@@ -12,7 +12,7 @@ import java.util.Set;
 public class Cinema {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private int cinema_id;
+    private Integer cinema_id;
 
     @Column(nullable = false, length = 256)
     private String cinema_name;

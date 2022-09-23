@@ -13,10 +13,10 @@ public class ReservationSeat
 {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private int reservation_seat_id;
+    private Integer reservation_seat_id;
 
     @Column(nullable = false, precision = 2)
-    private float price;
+    private Float price;
 
     @Column(nullable = false)
     private Boolean status;

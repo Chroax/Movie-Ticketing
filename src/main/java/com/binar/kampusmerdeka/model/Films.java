@@ -14,7 +14,7 @@ public class Films
 {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private int film_id;
+    private Integer film_id;
 
     @Column(nullable = false, length = 32, unique = true)
     private String film_name;
@@ -26,7 +26,7 @@ public class Films
     private String description;
 
     @Column(nullable = false)
-    private int duration;
+    private Integer duration;
 
     @Column(nullable = false, columnDefinition="DATE")
     private Date release_date;
