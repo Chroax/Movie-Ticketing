@@ -31,11 +31,8 @@ public class Films
     @Column(nullable = false, columnDefinition="DATE")
     private Date release_date;
 
-    @ManyToMany
-    @JoinTable(name = "genres_films",
-            joinColumns = @JoinColumn(name = "film_id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    Set<Genre> genres;
+    @OneToMany(mappedBy = "film")
+    Set<GenreFilms> genreFilms;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "films")
     private Set<Schedules> schedules;
