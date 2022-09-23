@@ -31,6 +31,6 @@ public class Schedules {
     private Films films;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cinema_hall_id")
+    @JoinColumn(name = "cinema_hall_id", nullable = false)
     private CinemaHall cinemaHall;
 }
