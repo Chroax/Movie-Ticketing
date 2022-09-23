@@ -19,12 +19,15 @@ public class CinemaHall
     @Column(nullable = false, columnDefinition = "char(2)")
     private String cinema_hall_name;
 
+    /* Fitur untuk bab selanjutnya
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="cinema_id", nullable = false)//Optional
     private Cinema cinema;
 
-    @OneToOne(mappedBy = "cinemaHall")
-    private Schedules schedules;
+
+    @OneToMany(mappedBy = "cinemaHall")
+    private Set<Schedules> schedules;
+    */
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seatCinemaHall")
     private Set<Seats> seats;

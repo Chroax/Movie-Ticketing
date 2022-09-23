@@ -125,12 +125,12 @@ public class FilmController
         MessageModel messageModel = new MessageModel();
         try {
             List<Films> filmsGet = filmService.showFilm();
-            messageModel.setMessage("SUCCESS GET ALL FILMS");
+            messageModel.setMessage("SUCCESS GET ALL SHOWING FILMS");
             messageModel.setStatus(200);
             messageModel.setData(filmsGet);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET ALL FILMS");
+            messageModel.setMessage("FAILED GET ALL SHOWING FILMS");
             messageModel.setStatus(500);
             messageModel.setMessage(exception.getMessage());
         }

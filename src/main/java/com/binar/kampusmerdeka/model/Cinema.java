@@ -24,6 +24,8 @@ public class Cinema {
     @JoinColumn(name="city_id", nullable = false)//Optional
     private City city;
 
+    /* Fitur bab selanjutnya
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cinema")
     private Set<CinemaHall> cinemaHalls;
+     */
 }
