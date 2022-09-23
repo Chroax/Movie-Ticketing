@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -38,4 +39,7 @@ public class Users {
     @Column(nullable = false)
     @UpdateTimestamp
     private Date modified_at;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "users")
+    private Set<Booking> bookings;
 }

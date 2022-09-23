@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -24,4 +25,7 @@ public class CinemaHall
 
     @OneToOne(mappedBy = "cinemaHall")
     private Schedules schedules;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seatCinemaHall")
+    private Set<Seats> seats;
 }
