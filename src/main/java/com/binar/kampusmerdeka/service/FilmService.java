@@ -1,16 +1,17 @@
 package com.binar.kampusmerdeka.service;
 
-import com.binar.kampusmerdeka.model.Films;
+import com.binar.kampusmerdeka.dto.*;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface FilmService
-{
-    public Films addFilm(Films film);
-    public List<Films> addFilms(List<Films> films);
-    public Films getFilmById(int id);
-    public List<Films> getAllFilms();
-    public void updateFilm(Films films, int filmId);
-    public void deleteFilm(int id);
-    public List<Films> showFilm();
+public interface FilmService{
+
+    FilmResponse registerFilm(FilmRequest filmRequest);
+    FilmResponse searchFilmById(UUID filmId);
+    List<FilmResponse> searchFilmByName(String filmName);
+    List<FilmResponse> searchAllFilm();
+    FilmResponse updateFilm(FilmUpdateRequest filmUpdateRequest, UUID filmId);
+    Boolean deleteFilm(UUID filmId);
+    List<FilmResponse> searchFilmShowing();
 }

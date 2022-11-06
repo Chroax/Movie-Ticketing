@@ -1,38 +1,52 @@
 package com.binar.kampusmerdeka.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
-public class Films
-{
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "films")
+public class Films {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer film_id;
+    @GeneratedValue
+    @Column(name = "film_id")
+    private UUID filmId;
 
-    @Column(nullable = false, length = 32, unique = true)
-    private String film_name;
+    @Column(name = "film_name", nullable = false, length = 256)
+    private String filmName;
 
-    @Column(nullable = false)
-    private Boolean status;
+    @Column(name = "show_status", nullable = false)
+    private Boolean showStatus;
 
-    @Column(nullable = false, columnDefinition="TEXT")
+    @Column(name = "description", nullable = false, columnDefinition="TEXT")
     private String description;
 
-    @Column(nullable = false)
-    private Integer duration;
+    @Column(name = "duration_min", nullable = false)
+    private Integer durationMin;
 
-    @Column(nullable = false, columnDefinition="DATE")
-    private Date release_date;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
+    @Column(name = "release_date", nullable = false, columnDefinition="DATE")
+    private LocalDate releaseDate;
 
-    @OneToMany(mappedBy = "film")
-    Set<GenreFilms> genreFilms;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
+    @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
+    @Column(name = "modified_at")
+    @UpdateTimestamp
+    private LocalDateTime modifiedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "films")
     private Set<Schedules> schedules;

@@ -26,10 +26,6 @@ public class ReservationSeat
     private Seats reserveSeat;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="schedule_id", nullable = false)
-    private Schedules reserveSeatSchedule;
-
-    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="booking_id", nullable = false)
     private Schedules reserveSeatBooking;
 }

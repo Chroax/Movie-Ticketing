@@ -1,6 +1,5 @@
 package com.binar.kampusmerdeka.service.impl;
 
-import com.binar.kampusmerdeka.model.Genre;
 import com.binar.kampusmerdeka.model.Schedules;
 import com.binar.kampusmerdeka.repository.SchedulesRepository;
 import com.binar.kampusmerdeka.service.ScheduleService;

@@ -15,7 +15,7 @@ public class UserUpdateRequest {
     @Email(message = "Please provide a valid email address")
     private String email;
 
-    @Pattern(regexp = "^[0-9]*$",message = "The phone number is invalid.")
+    @Pattern(regexp = "^\\d*$",message = "The phone number is invalid.")
     private String phoneNumber;
 
     private Roles userRoles;

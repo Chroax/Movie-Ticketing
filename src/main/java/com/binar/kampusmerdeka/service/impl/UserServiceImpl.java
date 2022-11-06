@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse registerUser(UserRequest userRequest) {
-        String message = null;
+        String message;
 
         if(!isUserExist(userRequest.getEmail()))
         {

@@ -1,13 +1,14 @@
 package com.binar.kampusmerdeka.controller;
 
-import com.binar.kampusmerdeka.dto.MessageModel;
-import com.binar.kampusmerdeka.model.Films;
+import com.binar.kampusmerdeka.dto.*;
 import com.binar.kampusmerdeka.service.FilmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/film")
@@ -18,122 +19,131 @@ public class FilmController
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageModel addFilm(@RequestBody Films film) {
+    public ResponseEntity<MessageModel> addFilm(@RequestBody FilmRequest filmRequest) {
         MessageModel messageModel = new MessageModel();
-        try {
-            Films filmInsert = filmService.addFilm(film);
-            messageModel.setMessage("SUCCESS ADD NEW FILMS");
-            messageModel.setStatus(200);
-            messageModel.setData(filmInsert);
-        }catch (Exception exception)
+
+        FilmResponse filmResponse = filmService.registerFilm(filmRequest);
+
+        if(filmResponse.getMessage() != null)
         {
-            messageModel.setMessage("FAILED ADD NEW FILMS");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            messageModel.setStatus(HttpStatus.CONFLICT.value());
+            messageModel.setMessage(filmResponse.getMessage());
         }
-        return messageModel;
+        else
+        {
+            messageModel.setStatus(HttpStatus.OK.value());
+            messageModel.setMessage("Register new film");
+            messageModel.setData(filmResponse);
+        }
+
+        return ResponseEntity.ok().body(messageModel);
     }
 
-    @PostMapping("/adds")
-    @ResponseStatus(HttpStatus.CREATED)
-    public MessageModel addFilms(@RequestBody List<Films> films) {
-        MessageModel messageModel = new MessageModel();
-        try {
-            List<Films> filmsInsert = filmService.addFilms(films);
-            messageModel.setMessage("SUCCESS ADD NEW FILMS");
-            messageModel.setStatus(200);
-            messageModel.setData(filmsInsert);
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("FAILED ADD NEW FILMS");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
-        }
-        return messageModel;
-    }
+    @GetMapping("/get-all")
+    public ResponseEntity<MessageModel> getAllFilms(){
 
-    @GetMapping
-    public MessageModel getAllFilms(){
         MessageModel messageModel = new MessageModel();
         try {
-            List<Films> filmsGet = filmService.getAllFilms();
-            messageModel.setMessage("SUCCESS GET ALL FILMS");
-            messageModel.setStatus(200);
+            List<FilmResponse> filmsGet = filmService.searchAllFilm();
+            messageModel.setMessage("Success get all film");
+            messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(filmsGet);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET ALL FILMS");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            messageModel.setMessage("Failed get all film");
+            messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
         }
-        return messageModel;
+
+        return ResponseEntity.ok().body(messageModel);
+    }
+
+    @GetMapping("/name/{filmName}")
+    public ResponseEntity<MessageModel> getFilmByName(@PathVariable String filmName){
+        MessageModel messageModel = new MessageModel();
+        try {
+            List<FilmResponse> filmsGet = filmService.searchFilmByName(filmName);
+            messageModel.setMessage("Success get film");
+            messageModel.setStatus(HttpStatus.OK.value());
+            messageModel.setData(filmsGet);
+        }
+        catch (Exception exception)
+        {
+            messageModel.setMessage("Failed get film");
+            messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+        }
+        return ResponseEntity.ok().body(messageModel);
     }
 
     @GetMapping("/id/{filmId}")
-    public MessageModel getFilmById(@PathVariable int filmId){
+    public ResponseEntity<MessageModel> getFilmById(@PathVariable UUID filmId){
         MessageModel messageModel = new MessageModel();
         try {
-            Films filmGet= filmService.getFilmById(filmId);
-            messageModel.setMessage("SUCCESS GET FILM");
-            messageModel.setStatus(200);
-            messageModel.setData(filmGet);
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("FAILED GET FILM");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
-        }
-        return messageModel;
-    }
-
-    @PutMapping("/update/{filmId}")
-    public MessageModel updateFilm(@PathVariable int filmId, @RequestBody Films film) {
-        MessageModel messageModel = new MessageModel();
-        try {
-            filmService.updateFilm(film, filmId);
-            messageModel.setMessage("SUCCESS UPDATE FILM BY ID : " + filmId);
-            messageModel.setStatus(200);
-            messageModel.setData(filmService.getFilmById(filmId));
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("FAILED UPDATE GENRE BY ID : " + filmId);
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
-        }
-        return messageModel;
-    }
-
-    @DeleteMapping("/{filmId}")
-    public MessageModel deleteFilm(@PathVariable int filmId){
-        MessageModel messageModel = new MessageModel();
-        try {
-            filmService.deleteFilm(filmId);
-            messageModel.setMessage("SUCCESS DELETE FILM BY ID : " + filmId);
-            messageModel.setStatus(200);
-            messageModel.setData(null);
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("FAILED DELETE FILM BY ID : " + filmId);
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
-        }
-        return messageModel;
-    }
-
-    @GetMapping("/showing")
-    public MessageModel getAllShowingFilms(){
-        MessageModel messageModel = new MessageModel();
-        try {
-            List<Films> filmsGet = filmService.showFilm();
-            messageModel.setMessage("SUCCESS GET ALL SHOWING FILMS");
-            messageModel.setStatus(200);
+            FilmResponse filmsGet = filmService.searchFilmById(filmId);
+            messageModel.setMessage("Success get film");
+            messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(filmsGet);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET ALL SHOWING FILMS");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            messageModel.setMessage("Failed get film");
+            messageModel.setStatus(HttpStatus.NO_CONTENT.value());
         }
-        return messageModel;
+        return ResponseEntity.ok().body(messageModel);
+    }
+
+    @PutMapping("/update/{filmId}")
+    public ResponseEntity<MessageModel> updateFilm(@PathVariable UUID filmId, @RequestBody FilmUpdateRequest filmUpdateRequest) {
+        MessageModel messageModel = new MessageModel();
+        FilmResponse filmResponse = filmService.updateFilm(filmUpdateRequest, filmId);
+
+        if(filmResponse.getMessage() != null)
+        {
+            messageModel.setStatus(HttpStatus.CONFLICT.value());
+            messageModel.setMessage(filmResponse.getMessage());
+        }
+        else
+        {
+            messageModel.setStatus(HttpStatus.OK.value());
+            messageModel.setMessage("Update film with id : " + filmId);
+            messageModel.setData(filmResponse);
+        }
+
+        return ResponseEntity.ok().body(messageModel);
+    }
+
+    @DeleteMapping("/delete/{filmId}")
+    public ResponseEntity<MessageModel> deleteFilm(@PathVariable UUID filmId){
+        MessageModel messageModel = new MessageModel();
+        Boolean deleteFilm = filmService.deleteFilm(filmId);
+
+        if(deleteFilm)
+        {
+            messageModel.setMessage("Success delete film by id : " + filmId);
+            messageModel.setStatus(HttpStatus.OK.value());
+        }
+        else
+        {
+            messageModel.setMessage("Failed delete film by id : " + filmId + ", not found");
+            messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+        }
+
+        return ResponseEntity.ok().body(messageModel);
+    }
+
+    @GetMapping("/showing")
+    public ResponseEntity<MessageModel> getAllShowingFilms(){
+
+        MessageModel messageModel = new MessageModel();
+        try {
+            List<FilmResponse> filmsGet = filmService.searchFilmShowing();
+            messageModel.setMessage("Success get all film showing");
+            messageModel.setStatus(HttpStatus.OK.value());
+            messageModel.setData(filmsGet);
+        }catch (Exception exception)
+        {
+            messageModel.setMessage("Failed get all film showing");
+            messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
+        }
+
+        return ResponseEntity.ok().body(messageModel);
     }
 }
