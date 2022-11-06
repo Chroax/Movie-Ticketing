@@ -20,10 +20,6 @@ public class CinemaHall
     private String cinema_hall_name;
 
     /* Fitur untuk bab selanjutnya
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="cinema_id", nullable = false)//Optional
-    private Cinema cinema;
-
 
     @OneToMany(mappedBy = "cinemaHall")
     private Set<Schedules> schedules;

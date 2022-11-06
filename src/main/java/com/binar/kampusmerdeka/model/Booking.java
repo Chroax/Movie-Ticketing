@@ -28,9 +28,11 @@ public class Booking
     @CreationTimestamp
     private Date created_at;
 
+    /*
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="user_id", nullable = false)//Optional
     private Users users;
+    */
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "reserveSeatBooking")
     private Set<ReservationSeat> reservationSeats;

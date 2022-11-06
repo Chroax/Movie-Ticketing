@@ -1,13 +1,19 @@
 package com.binar.kampusmerdeka.controller;
 
 import com.binar.kampusmerdeka.dto.MessageModel;
-import com.binar.kampusmerdeka.model.Users;
+import com.binar.kampusmerdeka.dto.UserRequest;
+import com.binar.kampusmerdeka.dto.UserResponse;
+import com.binar.kampusmerdeka.dto.UserUpdateRequest;
 import com.binar.kampusmerdeka.service.UserService;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/user")
@@ -18,104 +24,149 @@ public class UserController
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageModel addEmployee(@RequestBody Users user) {
+    public ResponseEntity<MessageModel> registerUser(@RequestBody UserRequest userRequest) {
         MessageModel messageModel = new MessageModel();
-        try {
-            Users userInsert = userService.addUser(user);
-            messageModel.setMessage("SUCCESS ADD NEW USER");
-            messageModel.setStatus(200);
-            messageModel.setData(userInsert);
-        }catch (Exception exception)
+        boolean isEmailValid = EmailValidator.getInstance().isValid(userRequest.getEmail());
+
+        if(isEmailValid)
         {
-            messageModel.setMessage("FAILED ADD NEW USER");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            UserResponse userResponse = userService.registerUser(userRequest);
+
+            if(userResponse.getMessage() != null)
+            {
+                messageModel.setStatus(HttpStatus.CONFLICT.value());
+                messageModel.setMessage(userResponse.getMessage());
+            }
+            else
+            {
+                messageModel.setStatus(HttpStatus.OK.value());
+                messageModel.setMessage("Register new user");
+                messageModel.setData(userResponse);
+            }
         }
-        return messageModel;
+        else
+        {
+            messageModel.setStatus(HttpStatus.BAD_REQUEST.value());
+            messageModel.setMessage("Email is not valid");
+        }
+
+        return ResponseEntity.ok().body(messageModel);
     }
 
-    @GetMapping
-    public MessageModel getAllUsers(){
+    @GetMapping("/get-all")
+    public ResponseEntity<MessageModel> getAllUsers(){
         MessageModel messageModel = new MessageModel();
         try {
-            List<Users> usersGet = userService.getAllUser();
-            messageModel.setMessage("SUCCESS GET ALL USER");
-            messageModel.setStatus(200);
+            List<UserResponse> usersGet = userService.searchAllUser();
+            messageModel.setMessage("Success get all user");
+            messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(usersGet);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET ALL USER");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            messageModel.setMessage("Failed get all user");
+            messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
         }
-        return messageModel;
+        return ResponseEntity.ok().body(messageModel);
     }
 
     @GetMapping("/id/{userId}")
-    public MessageModel getUserById(@PathVariable int userId){
+    public ResponseEntity<MessageModel> getUserById(@PathVariable UUID userId){
         MessageModel messageModel = new MessageModel();
         try {
-            Users userGet = userService.getUserById(userId);
-            messageModel.setMessage("SUCCESS GET USER");
-            messageModel.setStatus(200);
+            UserResponse userGet = userService.searchUserById(userId);
+            messageModel.setMessage("Success get user");
+            messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(userGet);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET USER");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            messageModel.setMessage("Failed get user");
+            messageModel.setStatus(HttpStatus.NO_CONTENT.value());
         }
-        return messageModel;
+        return ResponseEntity.ok().body(messageModel);
     }
 
-    @GetMapping("/username/{username}")
-    public MessageModel getUserById(@PathVariable String username){
+    @GetMapping("/name/{name}")
+    public ResponseEntity<MessageModel> getUserByName(@PathVariable String name){
         MessageModel messageModel = new MessageModel();
         try {
-            List<Users> usersGet = userService.getUserByUsername(username);
-            messageModel.setMessage("SUCCESS GET USER");
-            messageModel.setStatus(200);
+            List<UserResponse> usersGet = userService.searchUserByName(name);
+            messageModel.setMessage("Success get user");
+            messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(usersGet);
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("FAILED GET USER");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
         }
-        return messageModel;
+        catch (Exception exception)
+        {
+            messageModel.setMessage("Failed get user");
+            messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+        }
+        return ResponseEntity.ok().body(messageModel);
     }
 
     @PutMapping("/update/{userId}")
-    public MessageModel updateUser(@PathVariable int userId, @RequestBody Users user) {
+    public ResponseEntity<MessageModel> updateUser(@PathVariable UUID userId, @RequestBody UserUpdateRequest userUpdateRequest) {
         MessageModel messageModel = new MessageModel();
-        try {
-            userService.updateUser(user, userId);
-            messageModel.setMessage("SUCCESS UPDATE USER BY ID : " + userId);
-            messageModel.setStatus(200);
-            messageModel.setData(userService.getUserById(userId));
-        }catch (Exception exception)
+
+        if(userUpdateRequest.getEmail() != null)
         {
-            messageModel.setMessage("FAILED UPDATE USER BY ID : " + userId);
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            boolean isEmailValid = EmailValidator.getInstance().isValid(userUpdateRequest.getEmail());
+
+            if(isEmailValid)
+            {
+                UserResponse userResponse = userService.updateUser(userUpdateRequest, userId);
+
+                if(userResponse.getMessage() != null)
+                {
+                    messageModel.setStatus(HttpStatus.CONFLICT.value());
+                    messageModel.setMessage(userResponse.getMessage());
+                }
+                else
+                {
+                    messageModel.setStatus(HttpStatus.OK.value());
+                    messageModel.setMessage("Update user with id : " + userId);
+                    messageModel.setData(userResponse);
+                }
+            }
+            else
+            {
+                messageModel.setStatus(HttpStatus.BAD_REQUEST.value());
+                messageModel.setMessage("Email is not valid");
+            }
         }
-        return messageModel;
+        else
+        {
+            UserResponse userResponse = userService.updateUser(userUpdateRequest, userId);
+
+            if(userResponse.getMessage() != null)
+            {
+                messageModel.setStatus(HttpStatus.CONFLICT.value());
+                messageModel.setMessage(userResponse.getMessage());
+            }
+            else
+            {
+                messageModel.setStatus(HttpStatus.OK.value());
+                messageModel.setMessage("Update user with id : " + userId);
+                messageModel.setData(userResponse);
+            }
+        }
+
+        return ResponseEntity.ok().body(messageModel);
     }
 
-    @DeleteMapping("/{userId}")
-    public MessageModel deleteUser(@PathVariable int userId){
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<MessageModel> deleteUser(@PathVariable UUID userId){
         MessageModel messageModel = new MessageModel();
-        try {
-            userService.deleteUser(userId);
-            messageModel.setMessage("SUCCESS DELETE USER BY ID : " + userId);
-            messageModel.setStatus(200);
-            messageModel.setData(null);
-        }catch (Exception exception)
+        Boolean deleteUser = userService.deleteUser(userId);
+        if(deleteUser)
         {
-            messageModel.setMessage("FAILED DELETE USER BY ID : " + userId);
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            messageModel.setMessage("Success non-active user by id : " + userId);
+            messageModel.setStatus(HttpStatus.OK.value());
         }
-        return messageModel;
+        else
+        {
+            messageModel.setMessage("Failed non-active user by id : " + userId + ", not found");
+            messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+        }
+
+        return ResponseEntity.ok().body(messageModel);
     }
 }

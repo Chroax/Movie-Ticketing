@@ -1,45 +1,56 @@
 package com.binar.kampusmerdeka.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "email", columnNames = "email"),
+                @UniqueConstraint(name = "phone_number", columnNames = "phone_number")
+        })
 public class Users {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer user_id;
+    @GeneratedValue
+    @Column(name = "user_id")
+    private UUID userId;
 
-    @Column(nullable = false, length = 32, unique = true)
-    private String username;
-
-    @Column(nullable = false, length = 64, unique = true)
-    private String email;
-
-    @Column(nullable = false, length = 32)
-    private String password;
-
-    @Column(nullable = false, length = 64)
+    @Column(name = "name", length = 256, nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true, columnDefinition = "char(16)")
-    private String phone_number;
+    @Column(name = "email", length = 256, nullable = false)
+    private String email;
 
-    @Column(nullable = false)
-    @CreationTimestamp
-    private Date created_at;
+    @Column(name = "password", length = 32, nullable = false)
+    private String password;
 
-    @Column(nullable = false)
+    @Column(name = "phone_number", length = 16, nullable = false)
+    private String phoneNumber;
+
+    @Column(name = "status", nullable = false)
+    private Boolean status = true;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
+    @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
+    @Column(name = "modified_at")
     @UpdateTimestamp
-    private Date modified_at;
+    private LocalDateTime modifiedAt;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "users")
-    private Set<Booking> bookings;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Roles userRoles;
 }

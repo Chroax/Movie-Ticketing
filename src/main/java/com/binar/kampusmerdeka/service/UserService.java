@@ -1,14 +1,20 @@
 package com.binar.kampusmerdeka.service;
 
-import com.binar.kampusmerdeka.model.Users;
+import com.binar.kampusmerdeka.dto.UserRequest;
+import com.binar.kampusmerdeka.dto.UserResponse;
+import com.binar.kampusmerdeka.dto.UserUpdateRequest;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
-    public Users addUser(Users user);
-    public Users getUserById(int id);
-    public List<Users> getUserByUsername(String username);
-    public List<Users> getAllUser();
-    public void updateUser(Users user, int userId);
-    public void deleteUser(int id);
+
+    UserResponse registerUser(UserRequest userRequest);
+    UserResponse updateUser(UserUpdateRequest userUpdateRequest, UUID userId);
+    Boolean deleteUser(UUID userId);
+    UserResponse searchUserById(UUID userId);
+    List<UserResponse> searchAllUser();
+    List<UserResponse> searchUserByName(String name);
+    Boolean isUserExist(String email);
+    Boolean isPhoneNumberExist(String phoneNumber);
 }
