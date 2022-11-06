@@ -1,9 +1,7 @@
 package com.binar.kampusmerdeka.controller;
 
-import com.binar.kampusmerdeka.dto.MessageModel;
-import com.binar.kampusmerdeka.dto.UserRequest;
-import com.binar.kampusmerdeka.dto.UserResponse;
-import com.binar.kampusmerdeka.dto.UserUpdateRequest;
+import com.binar.kampusmerdeka.dto.*;
+import com.binar.kampusmerdeka.service.BookingService;
 import com.binar.kampusmerdeka.service.UserService;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,9 @@ public class UserController
 {
     @Autowired
     UserService userService;
+
+    @Autowired
+    BookingService bookingService;
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
@@ -167,6 +168,23 @@ public class UserController
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
         }
 
+        return ResponseEntity.ok().body(messageModel);
+    }
+
+    @GetMapping("/{userId}/history")
+    public ResponseEntity<MessageModel> getAllHistoryOrder(@PathVariable UUID userId){
+        MessageModel messageModel = new MessageModel();
+        try {
+            List<BookingResponse> bookingGet = bookingService.searchAllBookingByUser(userId);
+            messageModel.setMessage("Success get booking history");
+            messageModel.setStatus(HttpStatus.OK.value());
+            messageModel.setData(bookingGet);
+        }
+        catch (Exception exception)
+        {
+            messageModel.setMessage("Success get booking history");
+            messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+        }
         return ResponseEntity.ok().body(messageModel);
     }
 }

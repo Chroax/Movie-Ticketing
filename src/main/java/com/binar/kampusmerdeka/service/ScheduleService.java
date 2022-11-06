@@ -1,16 +1,15 @@
 package com.binar.kampusmerdeka.service;
 
 
-import com.binar.kampusmerdeka.model.Schedules;
+import com.binar.kampusmerdeka.dto.ScheduleRequest;
+import com.binar.kampusmerdeka.dto.ScheduleResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ScheduleService
 {
-    public Schedules addSchedule(Schedules schedule);
-    public List<Schedules> addSchedules(List<Schedules> schedules);
-    public Schedules getScheduleById(int id);
-    public List<Schedules> getAllSchedules();
-    public void deleteSchedule(int id);
-    public List<Schedules> showFilmSchedules(int id);
+    ScheduleResponse addSchedule(ScheduleRequest scheduleRequest);
+    List<ScheduleResponse> showFilmSchedulesById(UUID filmId);
+    List<ScheduleResponse> showFilmSchedulesByFilmName(String filmName);
 }

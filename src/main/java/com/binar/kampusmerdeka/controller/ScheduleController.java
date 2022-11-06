@@ -1,13 +1,16 @@
 package com.binar.kampusmerdeka.controller;
 
 import com.binar.kampusmerdeka.dto.MessageModel;
-import com.binar.kampusmerdeka.model.Schedules;
+import com.binar.kampusmerdeka.dto.ScheduleRequest;
+import com.binar.kampusmerdeka.dto.ScheduleResponse;
 import com.binar.kampusmerdeka.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/schedule")
@@ -18,105 +21,56 @@ public class ScheduleController
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageModel addSchedule(@RequestBody Schedules schedule) {
+    public ResponseEntity<MessageModel> addSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+
         MessageModel messageModel = new MessageModel();
-        try {
-            Schedules scheduleInsert = scheduleService.addSchedule(schedule);
-            messageModel.setMessage("SUCCESS ADD NEW SCHEDULE");
-            messageModel.setStatus(200);
-            messageModel.setData(scheduleInsert);
-        }catch (Exception exception)
+
+        ScheduleResponse scheduleResponse = scheduleService.addSchedule(scheduleRequest);
+
+        if(scheduleResponse.getMessage() != null)
         {
-            messageModel.setMessage("FAILED ADD NEW SCHEDULE");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            messageModel.setStatus(HttpStatus.CONFLICT.value());
+            messageModel.setMessage(scheduleResponse.getMessage());
         }
-        return messageModel;
+        else
+        {
+            messageModel.setStatus(HttpStatus.OK.value());
+            messageModel.setMessage("Register new schedule");
+            messageModel.setData(scheduleResponse);
+        }
+
+        return ResponseEntity.ok().body(messageModel);
     }
 
-    @PostMapping("/adds")
-    @ResponseStatus(HttpStatus.CREATED)
-    public MessageModel addSchedules(@RequestBody List<Schedules> schedules) {
+    @GetMapping("/film/id/{filmId}")
+    public ResponseEntity<MessageModel> getAllFilmSchedule(@PathVariable UUID filmId){
         MessageModel messageModel = new MessageModel();
         try {
-            List<Schedules> schedulesInsert = scheduleService.addSchedules(schedules);
-            messageModel.setMessage("SUCCESS ADD NEW SCHEDULES");
-            messageModel.setStatus(200);
-            messageModel.setData(schedulesInsert);
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("FAILED ADD NEW SCHEDULES");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
-        }
-        return messageModel;
-    }
-
-    @GetMapping
-    public MessageModel getAllSchedules(){
-        MessageModel messageModel = new MessageModel();
-        try {
-            List<Schedules> schedulesGet = scheduleService.getAllSchedules();
-            messageModel.setMessage("SUCCESS GET ALL SCHEDULE");
-            messageModel.setStatus(200);
+            List<ScheduleResponse> schedulesGet = scheduleService.showFilmSchedulesById(filmId);
+            messageModel.setMessage("Success get all film schedules by id");
+            messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(schedulesGet);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET ALL SCHEDULE");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            messageModel.setMessage("Failed get all film schedules by id");
+            messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
         }
-        return messageModel;
+        return ResponseEntity.ok().body(messageModel);
     }
 
-    @GetMapping("/id/{scheduleId}")
-    public MessageModel getScheduleById(@PathVariable int scheduleId){
+    @GetMapping("/film/name/{filmName}")
+    public ResponseEntity<MessageModel> getAllFilmSchedule(@PathVariable String filmName){
         MessageModel messageModel = new MessageModel();
         try {
-            Schedules scheduleGet= scheduleService.getScheduleById(scheduleId);
-            messageModel.setMessage("SUCCESS GET SCHEDULE");
-            messageModel.setStatus(200);
-            messageModel.setData(scheduleGet);
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("FAILED GET SCHEDULE");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
-        }
-        return messageModel;
-    }
-
-    @DeleteMapping("/{scheduleId}")
-    public MessageModel deleteSchedule(@PathVariable int scheduleId){
-        MessageModel messageModel = new MessageModel();
-        try {
-            scheduleService.deleteSchedule(scheduleId);
-            messageModel.setMessage("SUCCESS DELETE SCHEDULE BY ID : " + scheduleId);
-            messageModel.setStatus(200);
-            messageModel.setData(null);
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("FAILED DELETE SCHEDULE BY ID : " + scheduleId);
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
-        }
-        return messageModel;
-    }
-
-    @GetMapping("/film/{filmId}")
-    public MessageModel getAllFilmSchedule(@PathVariable int filmId){
-        MessageModel messageModel = new MessageModel();
-        try {
-            List<Schedules> schedulesGet = scheduleService.showFilmSchedules(filmId);
-            messageModel.setMessage("SUCCESS GET SELECTED FILM SCHEDULES");
-            messageModel.setStatus(200);
+            List<ScheduleResponse> schedulesGet = scheduleService.showFilmSchedulesByFilmName(filmName);
+            messageModel.setMessage("Success get all film schedules by name");
+            messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(schedulesGet);
         }catch (Exception exception)
         {
-            messageModel.setMessage("FAILED GET SELECTED FILM SCHEDULES");
-            messageModel.setStatus(500);
-            messageModel.setMessage(exception.getMessage());
+            messageModel.setMessage("Failed get all film schedules by name");
+            messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
         }
-        return messageModel;
+        return ResponseEntity.ok().body(messageModel);
     }
 }

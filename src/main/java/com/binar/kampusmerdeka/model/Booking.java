@@ -1,39 +1,47 @@
 package com.binar.kampusmerdeka.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "bookings")
 public class Booking
 {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer booking_id;
+    @GeneratedValue
+    @Column(name = "booking_id")
+    private UUID bookingId;
 
-    @Column(nullable = false)
-    private Integer number_of_seat;
+    @Column(name = "total_seat", nullable = false)
+    private Integer totalSeat;
 
-    @Column(nullable = false)
-    private Boolean status;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
+    @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    @CreationTimestamp
-    private Date created_at;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
+    @Column(name = "modified_at")
+    @UpdateTimestamp
+    private LocalDateTime modifiedAt;
 
-    /*
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id", nullable = false)//Optional
-    private Users users;
-    */
+    @JoinColumn(name="user_id", nullable = false)
+    private Users userBooking;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reserveSeatBooking")
-    private Set<ReservationSeat> reservationSeats;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedules schedulesBook;
+
+    @OneToMany(mappedBy = "booking")
+    Set<BookingDetails> bookingDetails;
 }

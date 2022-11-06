@@ -1,7 +1,6 @@
 package com.binar.kampusmerdeka.dto;
 
 import com.binar.kampusmerdeka.model.Films;
-import com.binar.kampusmerdeka.model.Roles;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;

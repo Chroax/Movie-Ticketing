@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -52,4 +53,7 @@ public class Users {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
     private Roles userRoles;
+
+    @OneToMany(mappedBy = "userBooking", cascade = CascadeType.ALL)
+    private Set<Booking> booking;
 }

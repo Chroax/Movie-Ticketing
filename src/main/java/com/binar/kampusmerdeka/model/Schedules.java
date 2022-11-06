@@ -1,33 +1,39 @@
 package com.binar.kampusmerdeka.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Set;
+import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "schedules")
 public class Schedules {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer scheduleId;
+    @GeneratedValue
+    @Column(name = "schedule_id")
+    private UUID scheduleId;
 
-    @Column(nullable = false, columnDefinition="TIME WITH TIME ZONE")
-    private Date startTime;
+    @Column(name = "start_time", nullable = false, columnDefinition="TIME WITH TIME ZONE")
+    private LocalTime startTime;
 
-    @Column(nullable = false, columnDefinition="TIME WITH TIME ZONE")
-    private Date endTime;
+    @Column(name = "end_time", nullable = false, columnDefinition="TIME WITH TIME ZONE")
+    private LocalTime endTime;
 
-    @Column(nullable = false, columnDefinition="DATE")
-    private Date date;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
+    @Column(name = "date", nullable = false, columnDefinition="DATE")
+    private LocalDate date;
 
-    @Column(nullable = false, precision = 2)
+    @Column(name = "price", nullable = false, precision = 2)
     private Float price;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
@@ -40,12 +46,13 @@ public class Schedules {
     private LocalDateTime modifiedAt;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="film_id", nullable = false)
+    @JoinColumn(name = "film_id", nullable = false)
     private Films films;
 
-    /* Fitur Selanjutnya
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cinema_hall_id", nullable = false)
     private CinemaHall cinemaHall;
-    */
+
+    @OneToOne(mappedBy = "schedulesBook")
+    private Booking booking;
 }

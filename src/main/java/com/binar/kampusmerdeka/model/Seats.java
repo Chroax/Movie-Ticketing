@@ -1,27 +1,51 @@
 package com.binar.kampusmerdeka.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "seats")
 public class Seats
 {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer seat_id;
+    @GeneratedValue(generator = "user-generator")
+    @GenericGenerator(name = "user-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "user_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+            })
+    @Column(name = "seat_id")
+    private Integer seatId;
 
-    @Column(nullable = false, columnDefinition = "char(3)")
-    private String seat_number;
+    @Column(name = "seat_number", nullable = false, columnDefinition = "char(4)")
+    private String seatNumber;
+
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
+    @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
+    @Column(name = "modified_at")
+    @UpdateTimestamp
+    private LocalDateTime modifiedAt;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="cinema_hall_id", nullable = false)
     private CinemaHall seatCinemaHall;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reserveSeat")
-    private Set<ReservationSeat> reservationSeats;
+    @OneToMany(mappedBy = "seats")
+    Set<BookingDetails> bookingDetails;
 }
