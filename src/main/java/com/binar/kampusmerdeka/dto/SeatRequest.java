@@ -11,13 +11,5 @@ public class SeatRequest {
     @NotEmpty(message = "Seat number is required.")
     private String seatNumber;
 
-    @NotEmpty(message = "Cinema Hall is required.")
-    private CinemaHall seatCinemaHall;
-
-    public Seats toSeat() {
-        return Seats.builder()
-                .seatNumber(this.seatNumber)
-                .seatCinemaHall(this.seatCinemaHall)
-                .build();
-    }
+    private Integer cinemaHallId;
 }

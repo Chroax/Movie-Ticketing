@@ -1,6 +1,7 @@
 package com.binar.kampusmerdeka.model;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -39,7 +40,7 @@ public class Users {
     private String phoneNumber;
 
     @Column(name = "status", nullable = false)
-    private Boolean status = true;
+    private Boolean status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -50,7 +51,7 @@ public class Users {
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
     private Roles userRoles;
 

@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -53,6 +54,6 @@ public class Schedules {
     @JoinColumn(name = "cinema_hall_id", nullable = false)
     private CinemaHall cinemaHall;
 
-    @OneToOne(mappedBy = "schedulesBook")
-    private Booking booking;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedulesBook", cascade = CascadeType.ALL)
+    private Set<Booking> booking;
 }

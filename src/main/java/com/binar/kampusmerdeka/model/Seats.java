@@ -43,7 +43,7 @@ public class Seats
     private LocalDateTime modifiedAt;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="cinema_hall_id", nullable = false)
+    @JoinColumn(name="cinema_hall_id", referencedColumnName = "cinema_hall_id", nullable = false)
     private CinemaHall seatCinemaHall;
 
     @OneToMany(mappedBy = "seats")

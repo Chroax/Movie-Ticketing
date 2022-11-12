@@ -12,6 +12,6 @@ public class SeatResponse {
 
     private Integer seatId;
     private String seatNumber;
-    private CinemaHall seatCinemaHall;
+    private Integer seatCinemaHall;
     private String message;
 }

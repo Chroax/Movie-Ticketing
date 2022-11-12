@@ -10,9 +10,6 @@ import java.util.UUID;
 
 public interface SchedulesRepository extends JpaRepository<Schedules, UUID>
 {
-    @Query("SELECT s FROM Schedules s where s.films = (:filmId)")
-    List<Schedules>findAllFilmScheduleById(@Param("filmId") UUID filmId);
-
-    @Query("SELECT s FROM Schedules s JOIN Films f where f.filmName = (:filmName)")
+    @Query(nativeQuery = true, value = "SELECT * FROM schedules s inner join films f on s.film_id = f.film_id where f.film_name = :filmName")
     List<Schedules>findAllFilmScheduleByName(@Param("filmName") String filmName);
 }

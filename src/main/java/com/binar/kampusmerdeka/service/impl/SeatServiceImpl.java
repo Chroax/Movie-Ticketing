@@ -2,7 +2,9 @@ package com.binar.kampusmerdeka.service.impl;
 
 import com.binar.kampusmerdeka.dto.SeatRequest;
 import com.binar.kampusmerdeka.dto.SeatResponse;
+import com.binar.kampusmerdeka.model.CinemaHall;
 import com.binar.kampusmerdeka.model.Seats;
+import com.binar.kampusmerdeka.repository.CinemaHallRepository;
 import com.binar.kampusmerdeka.repository.SeatRepository;
 import com.binar.kampusmerdeka.service.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SeatServiceImpl implements SeatService {
@@ -17,22 +20,45 @@ public class SeatServiceImpl implements SeatService {
     @Autowired
     SeatRepository seatRepository;
 
+    @Autowired
+    CinemaHallRepository cinemaHallRepository;
+
     @Override
     public SeatResponse addSeat(SeatRequest seatRequest) {
-        Seats seats = seatRequest.toSeat();
 
         try {
-            seatRepository.save(seats);
+            Optional<CinemaHall> cinemaHall = cinemaHallRepository.findById(seatRequest.getCinemaHallId());
+            if(cinemaHall.isPresent())
+            {
+                Seats seats = Seats.builder()
+                        .seatNumber(seatRequest.getSeatNumber())
+                        .seatCinemaHall(cinemaHall.get())
+                        .build();
+
+                try {
+                    seatRepository.save(seats);
+                    return SeatResponse.builder()
+                            .seatId(seats.getSeatId())
+                            .seatNumber(seats.getSeatNumber())
+                            .seatCinemaHall(seats.getSeatCinemaHall().getCinemaHallId())
+                            .build();
+                }
+                catch(Exception exception)
+                {
+                    return SeatResponse.builder()
+                            .message("Role already exist")
+                            .build();
+                }
+            }
+            else
+            {
+                return SeatResponse.builder()
+                        .message("Cinema hall id not exist")
+                        .build();
+            }
+        }catch (Exception ignore){
             return SeatResponse.builder()
-                    .seatId(seats.getSeatId())
-                    .seatNumber(seats.getSeatNumber())
-                    .seatCinemaHall(seats.getSeatCinemaHall())
-                    .build();
-        }
-        catch(Exception exception)
-        {
-            return SeatResponse.builder()
-                    .message("Role already exist")
+                    .message("Create role failed")
                     .build();
         }
     }
@@ -45,7 +71,7 @@ public class SeatServiceImpl implements SeatService {
             SeatResponse seatResponse = SeatResponse.builder()
                     .seatId(seats.getSeatId())
                     .seatNumber(seats.getSeatNumber())
-                    .seatCinemaHall(seats.getSeatCinemaHall())
+                    .seatCinemaHall(seats.getSeatCinemaHall().getCinemaHallId())
                     .build();
             allSeatResponse.add(seatResponse);
         }

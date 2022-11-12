@@ -29,7 +29,7 @@ public class CinemaHall
                     @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
                     @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
             })
-    @Column(name = "cinemma_hall_id")
+    @Column(name = "cinema_hall_id")
     private Integer cinemaHallId;
 
     @Column(name = "cinema_hall_name", length = 256, nullable = false)

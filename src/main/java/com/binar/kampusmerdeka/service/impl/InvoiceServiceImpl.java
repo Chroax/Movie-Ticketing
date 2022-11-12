@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,32 +26,40 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     BookingRepository bookingRepository;
+    @Autowired
+
     BookingDetailsRepository bookingDetailsRepository;
+    @Autowired
     CinemaHallRepository cinemaHallRepository;
+    @Autowired
     SchedulesRepository schedulesRepository;
+    @Autowired
     UserRepository userRepository;
+    @Autowired
     FilmRepository filmRepository;
+    @Autowired
     SeatRepository seatRepository;
 
     @Override
     public ByteArrayInputStream generateInvoice(UUID bookingId) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         DecimalFormat indonesiaCurrency = (DecimalFormat) DecimalFormat.getNumberInstance();
-        Booking booking = bookingRepository.findBookingDetail(bookingId);
+        Optional<Booking> booking = bookingRepository.findById(bookingId);
 
-        if(booking != null)
+        if(booking.isPresent())
         {
+            Booking bookings = booking.get();
             Users user = null;
             Schedules schedules = null;
             Films films = null;
             CinemaHall cinemaHall = null;
-            List<BookingDetails> bookingDetails = bookingDetailsRepository.findAllBookingDetailById(booking.getBookingId());
-
-            Optional<Users> isUser = userRepository.findById(booking.getUserBooking().getUserId());
+            List<BookingDetails> bookingDetails;
+            bookingDetails = bookingDetailsRepository.findAllBookingDetailById(bookings.getBookingId());
+            Optional<Users> isUser = userRepository.findById(bookings.getUserBooking().getUserId());
             if(isUser.isPresent())
                 user = isUser.get();
 
-            Optional<Schedules> isSchedule = schedulesRepository.findById(booking.getSchedulesBook().getScheduleId());
+            Optional<Schedules> isSchedule = schedulesRepository.findById(bookings.getSchedulesBook().getScheduleId());
             if(isSchedule.isPresent())
                 schedules = isSchedule.get();
 
@@ -106,7 +115,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
                     if(bookingDetail != null)
                     {
-                        Optional<Seats> isSeat = seatRepository.findById(bookingDetail.getId().getSeat_id());
+                        Optional<Seats> isSeat = seatRepository.findById(bookingDetail.getSeats().getSeatId());
                         if(isSeat.isPresent())
                             seats = isSeat.get();
                     }
@@ -156,7 +165,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 PdfPTable customer = new PdfPTable(colWidth);
 
                 customer.addCell(getCell("Book Number"));
-                customer.addCell(getCell(": " + booking.getBookingId()));
+                customer.addCell(getCell(": " + bookings.getBookingId()));
                 customer.addCell(getCell("Name"));
                 if(user != null)
                     customer.addCell(getCell(": " + user.getName()));
@@ -197,7 +206,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 payment.addCell(getCell("Total Payment"));
                 if(schedules != null)
                 {
-                    float totalPayment = schedules.getPrice() * booking.getTotalSeat();
+                    float totalPayment = schedules.getPrice() * bookings.getTotalSeat();
                     payment.addCell(getCell(": Rp " + indonesiaCurrency.format(totalPayment)));
 
                 }
