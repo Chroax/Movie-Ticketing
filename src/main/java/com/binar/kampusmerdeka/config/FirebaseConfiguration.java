@@ -19,7 +19,7 @@ public class FirebaseConfiguration {
     public void initialization(){
 
         try {
-            FirebaseOptions options = new FirebaseOptions.Builder()
+            FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(
                             new ClassPathResource(fbFile).getInputStream()
                     ))

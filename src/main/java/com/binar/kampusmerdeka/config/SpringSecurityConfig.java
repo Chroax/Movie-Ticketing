@@ -66,7 +66,6 @@ public class SpringSecurityConfig {
                 .antMatchers("/role/**").permitAll()
                 .antMatchers("/schedule/**").permitAll()
                 .antMatchers("/seat/**").permitAll()
-                .antMatchers("/user/**").permitAll()
 
                 .anyRequest().permitAll();
 
