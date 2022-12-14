@@ -1,6 +1,5 @@
 package com.binar.kampusmerdeka.dto;
 
-import com.binar.kampusmerdeka.model.Roles;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;

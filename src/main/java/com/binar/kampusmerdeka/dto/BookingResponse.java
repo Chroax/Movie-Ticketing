@@ -1,7 +1,5 @@
 package com.binar.kampusmerdeka.dto;
 
-import com.binar.kampusmerdeka.model.Schedules;
-import com.binar.kampusmerdeka.model.Users;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;

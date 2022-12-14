@@ -1,7 +1,5 @@
 package com.binar.kampusmerdeka.dto;
 
-import com.binar.kampusmerdeka.model.CinemaHall;
-import com.binar.kampusmerdeka.model.Seats;
 import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 

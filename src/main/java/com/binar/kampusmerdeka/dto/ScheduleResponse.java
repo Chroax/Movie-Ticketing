@@ -1,8 +1,6 @@
 package com.binar.kampusmerdeka.dto;
 
 
-import com.binar.kampusmerdeka.model.CinemaHall;
-import com.binar.kampusmerdeka.model.Films;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;

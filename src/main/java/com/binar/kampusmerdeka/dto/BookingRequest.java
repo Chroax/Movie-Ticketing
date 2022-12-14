@@ -1,8 +1,5 @@
 package com.binar.kampusmerdeka.dto;
 
-import com.binar.kampusmerdeka.model.Booking;
-import com.binar.kampusmerdeka.model.Schedules;
-import com.binar.kampusmerdeka.model.Users;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;

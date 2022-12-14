@@ -18,8 +18,6 @@ public class UserRequest {
     private String email;
 
     @NotEmpty(message = "Password is required.")
-    @Pattern(regexp = "(?=[A-Za-z\\d@#$%^&+!=]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+!=])(?=^.{8,32}$).*$",
-            message = "Password must have 1 Uppercase, 1 Lowercase, 1 Number, 1 special character, and min = 8 and max = 32")
     private String password;
 
     @NotEmpty(message = "Phone number is required.")
