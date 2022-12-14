@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +22,9 @@ import java.util.List;
 @RequestMapping(value = "/role", produces = {"application/json"})
 public class RoleController
 {
+    private final static Logger log = LoggerFactory.getLogger(RoleController.class);
+
+
     @Autowired
     RoleService roleService;
 
@@ -50,12 +55,14 @@ public class RoleController
         {
             messageModel.setStatus(HttpStatus.CONFLICT.value());
             messageModel.setMessage(roleResponse.getMessage());
+            log.error("Failed create new role, error : {}", roleResponse.getMessage());
         }
         else
         {
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setMessage("Register new role");
             messageModel.setData(roleResponse);
+            log.info("Success create new role with id {} ", roleResponse.getRoleId());
         }
 
         return ResponseEntity.ok().body(messageModel);
@@ -89,10 +96,12 @@ public class RoleController
             messageModel.setMessage("Success get all role");
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(rolesGet);
+            log.info("Success get all role");
         }catch (Exception exception)
         {
             messageModel.setMessage("Failed get all role");
             messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
+            log.error("Failed get all role, error : {}", exception.getMessage());
         }
         return ResponseEntity.ok().body(messageModel);
     }
@@ -122,12 +131,14 @@ public class RoleController
         {
             messageModel.setStatus(HttpStatus.CONFLICT.value());
             messageModel.setMessage(roleResponse.getMessage());
+            log.error("Failed update role with id {}, error : {} ", roleId, roleResponse.getMessage());
         }
         else
         {
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setMessage("Update role with id : " + roleId);
             messageModel.setData(roleResponse);
+            log.info("Success update role with id {}", roleId);
         }
 
         return ResponseEntity.ok().body(messageModel);
@@ -148,11 +159,13 @@ public class RoleController
         {
             messageModel.setMessage("Success delete role by id : " + roleId);
             messageModel.setStatus(HttpStatus.OK.value());
+            log.error("Failed delete role with id {} , error : {} ", roleId, "id not found");
         }
         else
         {
             messageModel.setMessage("Failed delete role by id : " + roleId + ", not found");
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+            log.info("Success delete role with id {}", roleId);
         }
 
         return ResponseEntity.ok().body(messageModel);

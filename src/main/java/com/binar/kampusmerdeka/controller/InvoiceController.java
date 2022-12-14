@@ -2,12 +2,15 @@ package com.binar.kampusmerdeka.controller;
 
 import com.binar.kampusmerdeka.dto.MessageModel;
 import com.binar.kampusmerdeka.service.InvoiceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,18 +23,25 @@ import java.util.UUID;
 @RequestMapping("/invoice")
 public class InvoiceController {
 
+    private final static Logger log = LoggerFactory.getLogger(InvoiceController.class);
+
+
     @Autowired
     InvoiceService invoiceService;
 
     @GetMapping("/generate/{bookingId}")
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
     public ResponseEntity generatePdf(@PathVariable UUID bookingId)
     {
         MessageModel messageModel = new MessageModel();
         ByteArrayInputStream inputStream = invoiceService.generateInvoice(bookingId);
 
         if (inputStream.available() > 0) {
+
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Disposition", "attachment; filename=Invoice-MTicket-" + bookingId + ".pdf");
+
+            log.info("Success generate invoice for order with id {}", bookingId);
 
             return ResponseEntity
                     .ok()
@@ -41,6 +51,7 @@ public class InvoiceController {
         } else {
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
             messageModel.setMessage("Booking data not found");
+            log.error("Failed generate invoice for order with id {}", bookingId);
             return ResponseEntity.ok().body(messageModel);
         }
     }

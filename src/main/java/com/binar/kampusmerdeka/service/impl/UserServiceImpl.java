@@ -1,7 +1,6 @@
 package com.binar.kampusmerdeka.service.impl;
 
 import com.binar.kampusmerdeka.config.EncoderConfiguration;
-import com.binar.kampusmerdeka.dto.SeatResponse;
 import com.binar.kampusmerdeka.dto.UserRequest;
 import com.binar.kampusmerdeka.dto.UserResponse;
 import com.binar.kampusmerdeka.dto.UserUpdateRequest;
@@ -11,6 +10,7 @@ import com.binar.kampusmerdeka.repository.RoleRepository;
 import com.binar.kampusmerdeka.repository.UserRepository;
 import com.binar.kampusmerdeka.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private PasswordEncoder encoder;
+
     @Override
     public UserResponse registerUser(UserRequest userRequest) {
         String message;
@@ -35,33 +38,40 @@ public class UserServiceImpl implements UserService {
             if(!isPhoneNumberExist(userRequest.getPhoneNumber()))
             {
                 try {
-                    Optional<Roles> roles = roleRepository.findById(userRequest.getRolesId());
-                    if(roles.isPresent())
-                    {
-                        Users users = Users.builder()
-                                .name(userRequest.getName())
-                                .email(userRequest.getEmail())
-                                .password(userRequest.getPassword())
-                                .phoneNumber(userRequest.getPhoneNumber())
-                                .userRoles(roles.get())
-                                .status(userRequest.getStatus())
-                                .build();
-                        users.setPassword(EncoderConfiguration.encrypt(users.getPassword()));
-                        userRepository.saveAndFlush(users);
-                        return UserResponse.builder()
-                                .userId(users.getUserId())
-                                .name(users.getName())
-                                .email(users.getEmail())
-                                .phoneNumber(users.getPhoneNumber())
-                                .rolesId(users.getUserRoles().getRoleId())
-                                .build();
+                    List<Integer> allRolesId = new ArrayList<>();
+                    List<Roles> allRoles = new ArrayList<>();
+                    for (Integer roleId: userRequest.getRolesId()) {
+                        Optional<Roles> roles = roleRepository.findById(roleId);
+                        if(roles.isPresent())
+                        {
+                            allRolesId.add(roleId);
+                            allRoles.add(roles.get());
+                        }
+                        else
+                            return UserResponse.builder()
+                                    .message("Roles id not exist")
+                                    .build();
                     }
-                    else
-                    {
-                        return UserResponse.builder()
-                                .message("Roles id not exist")
-                                .build();
-                    }
+
+                    Users users = Users.builder()
+                            .name(userRequest.getName())
+                            .email(userRequest.getEmail())
+                            .password(userRequest.getPassword())
+                            .phoneNumber(userRequest.getPhoneNumber())
+                            .rolesUsers(allRoles)
+                            .status(userRequest.getStatus())
+                            .build();
+
+                    users.setPassword(encoder.encode(users.getPassword()));
+
+                    userRepository.saveAndFlush(users);
+                    return UserResponse.builder()
+                            .userId(users.getUserId())
+                            .name(users.getName())
+                            .email(users.getEmail())
+                            .phoneNumber(users.getPhoneNumber())
+                            .rolesId(allRolesId)
+                            .build();
                 }
                 catch (Exception ignore){
                     return UserResponse.builder()
@@ -103,11 +113,19 @@ public class UserServiceImpl implements UserService {
             }
             if (userUpdateRequest.getRolesId() != null)
             {
-                Optional<Roles> roles = roleRepository.findById(userUpdateRequest.getRolesId());
-                if(roles.isPresent())
-                    users.setUserRoles(roles.get());
-                else
-                    message = "Role with this id doesnt exist";
+                List<Roles> allRoles = new ArrayList<>();
+                for (Integer roleId: userUpdateRequest.getRolesId()) {
+                    Optional<Roles> roles = roleRepository.findById(roleId);
+                    if(roles.isPresent())
+                    {
+                        allRoles.add(roles.get());
+                    }
+                    else
+                        return UserResponse.builder()
+                                .message("Roles id not exist")
+                                .build();
+                }
+                users.setRolesUsers(allRoles);
             }
             userRepository.saveAndFlush(users);
             return UserResponse.builder()
@@ -115,7 +133,6 @@ public class UserServiceImpl implements UserService {
                     .name(users.getName())
                     .email(users.getEmail())
                     .phoneNumber(users.getPhoneNumber())
-                    .rolesId(users.getUserRoles().getRoleId())
                     .message(message)
                     .build();
         } else {
@@ -149,7 +166,6 @@ public class UserServiceImpl implements UserService {
                     .name(users.getName())
                     .email(users.getEmail())
                     .phoneNumber(users.getPhoneNumber())
-                    .rolesId(users.getUserRoles().getRoleId())
                     .build();
         }
     }
@@ -168,8 +184,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean isUserExist(String email) {
-        Users users = userRepository.findByEmail(email);
-        return users != null;
+        Optional<Users> users = userRepository.findByEmail(email);
+        return users.isPresent();
     }
 
     @Override
@@ -186,7 +202,6 @@ public class UserServiceImpl implements UserService {
                     .name(user.getName())
                     .email(user.getEmail())
                     .phoneNumber(user.getPhoneNumber())
-                    .rolesId(user.getUserRoles().getRoleId())
                     .build();
             allUserResponse.add(userResponse);
         }

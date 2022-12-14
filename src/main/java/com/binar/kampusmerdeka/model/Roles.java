@@ -1,10 +1,14 @@
 package com.binar.kampusmerdeka.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,6 +37,7 @@ public class Roles{
     @Column(name = "role_name", length = 256, nullable = false)
     private String roleName;
 
-    @OneToMany(mappedBy = "userRoles", cascade = CascadeType.ALL)
-    private Set<Users> users;
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "rolesUsers", cascade = CascadeType.ALL)
+    private List<Users> users = new ArrayList<>();
 }
