@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +32,8 @@ import java.util.UUID;
 @RequestMapping(value = "/user", produces = {"application/json"})
 public class UserController
 {
+    private final static Logger log = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     UserService userService;
 
@@ -143,10 +147,12 @@ public class UserController
             messageModel.setMessage("Success get all user");
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(usersGet);
+            log.info("Success get all user");
         }catch (Exception exception)
         {
             messageModel.setMessage("Failed get all user");
             messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
+            log.error("Failed get all user, error : {}", exception.getMessage());
         }
         return ResponseEntity.ok().body(messageModel);
     }
@@ -177,10 +183,12 @@ public class UserController
             messageModel.setMessage("Success get user");
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(userGet);
+            log.info("Success get user with id {}", userId);
         }catch (Exception exception)
         {
             messageModel.setMessage("Failed get user");
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+            log.error("Failed get user with id {}, error : {}", userId, exception.getMessage());
         }
         return ResponseEntity.ok().body(messageModel);
     }
@@ -219,11 +227,13 @@ public class UserController
             messageModel.setMessage("Success get user");
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(usersGet);
+            log.info("Success get user with name {}", name);
         }
         catch (Exception exception)
         {
             messageModel.setMessage("Failed get user");
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+            log.error("Failed get user with name {}, error : {}", name, exception.getMessage());
         }
         return ResponseEntity.ok().body(messageModel);
     }
@@ -312,11 +322,13 @@ public class UserController
         {
             messageModel.setMessage("Success non-active user by id : " + userId);
             messageModel.setStatus(HttpStatus.OK.value());
+            log.info("Success non-active user with id {}", userId);
         }
         else
         {
             messageModel.setMessage("Failed non-active user by id : " + userId + ", not found");
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+            log.error("Failed non-active user with id {}", userId);
         }
 
         return ResponseEntity.ok().body(messageModel);
@@ -352,11 +364,13 @@ public class UserController
             messageModel.setMessage("Success get booking history");
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(bookingGet);
+            log.info("Success get history by user with id {}", userId);
         }
         catch (Exception exception)
         {
             messageModel.setMessage("Failed get booking history");
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+            log.error("Failed get history by user with id {}, error : {}", userId, exception.getMessage());
         }
         return ResponseEntity.ok().body(messageModel);
     }

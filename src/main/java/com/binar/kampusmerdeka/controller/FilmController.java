@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,8 @@ import java.util.UUID;
 @RequestMapping(value = "/film", produces = {"application/json"})
 public class FilmController
 {
+    private final static Logger log = LoggerFactory.getLogger(FilmController.class);
+
     @Autowired
     FilmService filmService;
 
@@ -55,12 +59,14 @@ public class FilmController
         {
             messageModel.setStatus(HttpStatus.CONFLICT.value());
             messageModel.setMessage(filmResponse.getMessage());
+            log.error("Failed create new film, error : {}", filmResponse.getMessage());
         }
         else
         {
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setMessage("Register new film");
             messageModel.setData(filmResponse);
+            log.info("Success create new film with id {}", filmResponse.getFilmId());
         }
 
         return ResponseEntity.ok().body(messageModel);
@@ -102,10 +108,12 @@ public class FilmController
             messageModel.setMessage("Success get all film");
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(filmsGet);
+            log.info("Success get all film");
         }catch (Exception exception)
         {
             messageModel.setMessage("Failed get all film");
             messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
+            log.error("Failed get all film, error : {}", exception.getMessage());
         }
 
         return ResponseEntity.ok().body(messageModel);
@@ -146,11 +154,13 @@ public class FilmController
             messageModel.setMessage("Success get film");
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(filmsGet);
+            log.info("Success get film with name {} ", filmName);
         }
         catch (Exception exception)
         {
             messageModel.setMessage("Failed get film");
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+            log.error("Failed get film with name {} ", filmName);
         }
         return ResponseEntity.ok().body(messageModel);
     }
@@ -182,10 +192,12 @@ public class FilmController
             messageModel.setMessage("Success get film");
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(filmsGet);
+            log.info("Success get film with id {} ", filmId);
         }catch (Exception exception)
         {
             messageModel.setMessage("Failed get film");
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+            log.error("Failed get film with id {} ", filmId);
         }
         return ResponseEntity.ok().body(messageModel);
     }
@@ -219,12 +231,14 @@ public class FilmController
         {
             messageModel.setStatus(HttpStatus.CONFLICT.value());
             messageModel.setMessage(filmResponse.getMessage());
+            log.error("Failed update film with id {}, error : {} ", filmId, filmResponse.getMessage());
         }
         else
         {
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setMessage("Update film with id : " + filmId);
             messageModel.setData(filmResponse);
+            log.info("Success update film with id {}", filmId);
         }
 
         return ResponseEntity.ok().body(messageModel);
@@ -242,15 +256,17 @@ public class FilmController
         MessageModel messageModel = new MessageModel();
         Boolean deleteFilm = filmService.deleteFilm(filmId);
 
-        if(deleteFilm)
+        if(Boolean.TRUE.equals(deleteFilm))
         {
             messageModel.setMessage("Success delete film by id : " + filmId);
             messageModel.setStatus(HttpStatus.OK.value());
+            log.info("Success delete film with id {}", filmId);
         }
         else
         {
             messageModel.setMessage("Failed delete film by id : " + filmId + ", not found");
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
+            log.error("Failed update film with id {}, error : {} ", filmId, "id not found");
         }
 
         return ResponseEntity.ok().body(messageModel);
@@ -293,10 +309,12 @@ public class FilmController
             messageModel.setMessage("Success get all film showing");
             messageModel.setStatus(HttpStatus.OK.value());
             messageModel.setData(filmsGet);
+            log.info("Success get all film showing");
         }catch (Exception exception)
         {
             messageModel.setMessage("Failed get all film showing");
             messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
+            log.error("Failed get all film showing, error : {}", exception.getMessage());
         }
 
         return ResponseEntity.ok().body(messageModel);

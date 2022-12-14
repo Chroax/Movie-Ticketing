@@ -2,6 +2,8 @@ package com.binar.kampusmerdeka.controller;
 
 import com.binar.kampusmerdeka.dto.MessageModel;
 import com.binar.kampusmerdeka.service.InvoiceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +23,9 @@ import java.util.UUID;
 @RequestMapping("/invoice")
 public class InvoiceController {
 
+    private final static Logger log = LoggerFactory.getLogger(InvoiceController.class);
+
+
     @Autowired
     InvoiceService invoiceService;
 
@@ -32,8 +37,11 @@ public class InvoiceController {
         ByteArrayInputStream inputStream = invoiceService.generateInvoice(bookingId);
 
         if (inputStream.available() > 0) {
+
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Disposition", "attachment; filename=Invoice-MTicket-" + bookingId + ".pdf");
+
+            log.info("Success generate invoice for order with id {}", bookingId);
 
             return ResponseEntity
                     .ok()
@@ -43,6 +51,7 @@ public class InvoiceController {
         } else {
             messageModel.setStatus(HttpStatus.NO_CONTENT.value());
             messageModel.setMessage("Booking data not found");
+            log.error("Failed generate invoice for order with id {}", bookingId);
             return ResponseEntity.ok().body(messageModel);
         }
     }

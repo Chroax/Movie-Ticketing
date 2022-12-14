@@ -56,7 +56,12 @@ public class OpenApiConfig {
         serverDev.setUrl("http://localhost:8080/");
         serverDev.setDescription("Main server for Dev");
 
+        Server serverProd = new Server();
+        serverProd.setUrl("https://api-mticketing.up.railway.app/");
+        serverProd.setDescription("Main server for Production");
+
         servers.add(serverDev);
+        servers.add(serverProd);
         return servers;
     }
 }
