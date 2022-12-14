@@ -6,6 +6,7 @@ import com.binar.kampusmerdeka.service.CinemaHallService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class CinemaHallController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageModel> createCinemaHall(@RequestBody CinemaHallRequest cinemaHallRequest)
     {
         MessageModel messageModel = new MessageModel();

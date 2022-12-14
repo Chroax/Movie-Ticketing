@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -44,6 +45,7 @@ public class FilmController
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageModel> addFilm(@RequestBody FilmRequest filmRequest) {
         MessageModel messageModel = new MessageModel();
 
@@ -208,6 +210,7 @@ public class FilmController
                                     + "}")
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @PutMapping("/update/{filmId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageModel> updateFilm(@PathVariable UUID filmId, @RequestBody FilmUpdateRequest filmUpdateRequest) {
         MessageModel messageModel = new MessageModel();
         FilmResponse filmResponse = filmService.updateFilm(filmUpdateRequest, filmId);
@@ -234,6 +237,7 @@ public class FilmController
                             value = "{\"responseCode\": 200, \"responseMessage\": \"Success delete film by id : 04ssd6c1-8dew-13xd-9b6a-0242ac120002\"}")
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @DeleteMapping("/delete/{filmId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageModel> deleteFilm(@PathVariable UUID filmId){
         MessageModel messageModel = new MessageModel();
         Boolean deleteFilm = filmService.deleteFilm(filmId);

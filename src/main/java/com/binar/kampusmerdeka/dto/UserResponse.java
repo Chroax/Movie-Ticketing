@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,5 +18,5 @@ public class UserResponse {
     private String email;
     private String phoneNumber;
     private String message;
-    private Integer rolesId;
+    private List<Integer> rolesId;
 }

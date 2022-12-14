@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Data
 public class UserUpdateRequest {
@@ -18,5 +19,5 @@ public class UserUpdateRequest {
     @Pattern(regexp = "^\\d*$",message = "The phone number is invalid.")
     private String phoneNumber;
 
-    private Integer rolesId;
+    private List<Integer> rolesId;
 }

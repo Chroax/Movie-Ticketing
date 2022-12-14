@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Data
 public class UserRequest {
@@ -28,7 +29,7 @@ public class UserRequest {
     private String phoneNumber;
 
     @NotEmpty(message = "Roles is required.")
-    private Integer rolesId;
+    private List<Integer> rolesId;
 
     @NotEmpty(message = "Status is required.")
     private Boolean status = true;

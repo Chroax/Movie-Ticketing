@@ -2,8 +2,10 @@ package com.binar.kampusmerdeka.controller;
 
 import com.binar.kampusmerdeka.dto.*;
 import com.binar.kampusmerdeka.model.Roles;
+import com.binar.kampusmerdeka.security.JwtUtils;
 import com.binar.kampusmerdeka.service.BookingService;
 import com.binar.kampusmerdeka.service.UserService;
+import com.binar.kampusmerdeka.service.impl.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -13,6 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +35,12 @@ public class UserController
 
     @Autowired
     BookingService bookingService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     @Operation(responses = {
             @ApiResponse(responseCode = "200", content = @Content(examples = {
@@ -78,6 +91,24 @@ public class UserController
         return ResponseEntity.ok().body(messageModel);
     }
 
+    @PostMapping("/sign-in")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<MessageModel> registerUser(@RequestBody LoginRequest loginRequest) {
+        MessageModel messageModel = new MessageModel();
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginRequest.getEmail(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        messageModel.setData(LoginResponse.build(jwt, userDetails));
+        messageModel.setStatus(HttpStatus.OK.value());
+        messageModel.setMessage("Success Login");
+
+        return ResponseEntity.ok().body(messageModel);
+    }
+
     @Operation(responses = {
             @ApiResponse(responseCode = "200", content = @Content(examples = {
                     @ExampleObject(name = "Data Users",
@@ -104,6 +135,7 @@ public class UserController
                                     + "}")
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @GetMapping("/get-all")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageModel> getAllUsers(){
         MessageModel messageModel = new MessageModel();
         try {
@@ -179,6 +211,7 @@ public class UserController
                                     + "}")
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @GetMapping("/name/{name}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageModel> getUserByName(@PathVariable String name){
         MessageModel messageModel = new MessageModel();
         try {
@@ -214,6 +247,7 @@ public class UserController
                                     + "}")
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @PutMapping("/update/{userId}")
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
     public ResponseEntity<MessageModel> updateUser(@PathVariable UUID userId, @RequestBody UserUpdateRequest userUpdateRequest) {
         MessageModel messageModel = new MessageModel();
 
@@ -270,6 +304,7 @@ public class UserController
                             value = "{\"responseCode\": 200, \"responseMessage\": \"Success non-active user by id : 90780f08-5dd9-11ed-9b6a-0242ac120002\"}")
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @DeleteMapping("/delete/{userId}")
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
     public ResponseEntity<MessageModel> deleteUser(@PathVariable UUID userId){
         MessageModel messageModel = new MessageModel();
         Boolean deleteUser = userService.deleteUser(userId);
@@ -309,6 +344,7 @@ public class UserController
                                     + "}")
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @GetMapping("/{userId}/history")
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
     public ResponseEntity<MessageModel> getAllHistoryOrder(@PathVariable UUID userId){
         MessageModel messageModel = new MessageModel();
         try {
