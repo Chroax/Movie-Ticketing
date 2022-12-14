@@ -1,7 +1,5 @@
 package com.binar.kampusmerdeka.dto;
 
-import com.binar.kampusmerdeka.model.Roles;
-import com.binar.kampusmerdeka.model.Users;
 import lombok.Data;
 
 import javax.validation.constraints.Email;

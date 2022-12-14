@@ -1,7 +1,6 @@
 package com.binar.kampusmerdeka.model;
 
 import lombok.*;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
