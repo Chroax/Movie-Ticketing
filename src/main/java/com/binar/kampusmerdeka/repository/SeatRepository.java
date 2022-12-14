@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface SeatRepository extends JpaRepository<Seats, Integer> {
-
-    @Query("SELECT s FROM Seats s where s.seatCinemaHall = (:cinemaHallId)")
+    @Query(nativeQuery = true, value = "SELECT * FROM seats s where s.cinema_hall_id = :cinemaHallId")
     List<Seats> findAllSeatByCinemaHall(@Param("cinemaHallId") Integer cinemaHallId);
 }

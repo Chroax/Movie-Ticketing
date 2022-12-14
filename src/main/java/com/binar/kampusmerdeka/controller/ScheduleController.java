@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/schedule")
+@RequestMapping(value = "/schedule", produces = {"application/json"})
 public class ScheduleController
 {
     @Autowired
@@ -39,22 +39,6 @@ public class ScheduleController
             messageModel.setData(scheduleResponse);
         }
 
-        return ResponseEntity.ok().body(messageModel);
-    }
-
-    @GetMapping("/film/id/{filmId}")
-    public ResponseEntity<MessageModel> getAllFilmSchedule(@PathVariable UUID filmId){
-        MessageModel messageModel = new MessageModel();
-        try {
-            List<ScheduleResponse> schedulesGet = scheduleService.showFilmSchedulesById(filmId);
-            messageModel.setMessage("Success get all film schedules by id");
-            messageModel.setStatus(HttpStatus.OK.value());
-            messageModel.setData(schedulesGet);
-        }catch (Exception exception)
-        {
-            messageModel.setMessage("Failed get all film schedules by id");
-            messageModel.setStatus(HttpStatus.BAD_GATEWAY.value());
-        }
         return ResponseEntity.ok().body(messageModel);
     }
 

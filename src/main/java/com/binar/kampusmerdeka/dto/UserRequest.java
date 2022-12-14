@@ -28,14 +28,8 @@ public class UserRequest {
     private String phoneNumber;
 
     @NotEmpty(message = "Roles is required.")
-    private Roles userRoles;
+    private Integer rolesId;
 
-    public Users toUsers() {
-        Users users = new Users();
-        users.setName(this.name);
-        users.setEmail(this.email);
-        users.setPassword(this.password);
-        users.setPhoneNumber(this.phoneNumber);
-        return users;
-    }
+    @NotEmpty(message = "Status is required.")
+    private Boolean status = true;
 }

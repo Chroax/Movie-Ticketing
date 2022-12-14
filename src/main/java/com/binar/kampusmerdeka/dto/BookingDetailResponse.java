@@ -1,6 +1,5 @@
 package com.binar.kampusmerdeka.dto;
 
-import com.binar.kampusmerdeka.model.Roles;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +9,9 @@ import java.util.UUID;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponse {
-
-    private UUID userId;
-    private String name;
-    private String email;
-    private String phoneNumber;
+public class BookingDetailResponse {
+    private UUID bookingId;
+    private Integer seatId;
+    private Boolean status;
     private String message;
-    private Integer rolesId;
 }

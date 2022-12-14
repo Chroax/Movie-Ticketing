@@ -10,6 +10,5 @@ import java.util.UUID;
 public interface ScheduleService
 {
     ScheduleResponse addSchedule(ScheduleRequest scheduleRequest);
-    List<ScheduleResponse> showFilmSchedulesById(UUID filmId);
     List<ScheduleResponse> showFilmSchedulesByFilmName(String filmName);
 }

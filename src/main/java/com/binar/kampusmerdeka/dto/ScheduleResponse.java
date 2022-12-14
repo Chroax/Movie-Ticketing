@@ -21,7 +21,7 @@ public class ScheduleResponse {
     private LocalTime endTime;
     private LocalDate date;
     private Float price;
-    private Films films;
-    private CinemaHall cinemaHall;
+    private UUID filmsId;
+    private Integer cinemaHallId;
     private String message;
 }

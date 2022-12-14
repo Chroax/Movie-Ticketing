@@ -2,6 +2,7 @@ package com.binar.kampusmerdeka.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -19,7 +20,6 @@ public class Booking
 {
     @Id
     @GeneratedValue
-    @Column(name = "booking_id")
     private UUID bookingId;
 
     @Column(name = "total_seat", nullable = false)
@@ -38,7 +38,7 @@ public class Booking
     @JoinColumn(name="user_id", nullable = false)
     private Users userBooking;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedules schedulesBook;
 

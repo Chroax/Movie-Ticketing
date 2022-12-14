@@ -1,7 +1,6 @@
 package com.binar.kampusmerdeka.controller;
 
 import com.binar.kampusmerdeka.dto.*;
-import com.binar.kampusmerdeka.model.BookingDetails;
 import com.binar.kampusmerdeka.service.BookingDetailService;
 import com.binar.kampusmerdeka.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/booking")
+@RequestMapping(value = "/booking", produces = {"application/json"})
 public class BookingController {
 
     @Autowired
@@ -44,13 +43,13 @@ public class BookingController {
 
     @PostMapping("/add/details")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<MessageModel> createBookingDetails(@RequestBody BookingDetails bookingDetails)
+    public ResponseEntity<MessageModel> createBookingDetails(@RequestBody BookingDetailRequest bookingDetails)
     {
         MessageModel messageModel = new MessageModel();
 
-        BookingDetails bookingResponse = bookingDetailService.createBookingDetail(bookingDetails);
+        BookingDetailResponse bookingResponse = bookingDetailService.createBookingDetail(bookingDetails);
 
-        if(bookingResponse == null)
+        if(bookingResponse.getMessage() != null)
         {
             messageModel.setStatus(HttpStatus.CONFLICT.value());
             messageModel.setMessage("Failed to create booking detail");
@@ -58,7 +57,7 @@ public class BookingController {
         else
         {
             messageModel.setStatus(HttpStatus.OK.value());
-            messageModel.setMessage("Create new booking");
+            messageModel.setMessage("Create new booking detail");
             messageModel.setData(bookingResponse);
         }
 

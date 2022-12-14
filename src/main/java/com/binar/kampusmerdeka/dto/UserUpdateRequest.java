@@ -18,5 +18,5 @@ public class UserUpdateRequest {
     @Pattern(regexp = "^\\d*$",message = "The phone number is invalid.")
     private String phoneNumber;
 
-    private Roles userRoles;
+    private Integer rolesId;
 }

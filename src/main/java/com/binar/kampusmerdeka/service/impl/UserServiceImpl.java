@@ -1,10 +1,13 @@
 package com.binar.kampusmerdeka.service.impl;
 
 import com.binar.kampusmerdeka.config.EncoderConfiguration;
+import com.binar.kampusmerdeka.dto.SeatResponse;
 import com.binar.kampusmerdeka.dto.UserRequest;
 import com.binar.kampusmerdeka.dto.UserResponse;
 import com.binar.kampusmerdeka.dto.UserUpdateRequest;
+import com.binar.kampusmerdeka.model.Roles;
 import com.binar.kampusmerdeka.model.Users;
+import com.binar.kampusmerdeka.repository.RoleRepository;
 import com.binar.kampusmerdeka.repository.UserRepository;
 import com.binar.kampusmerdeka.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public UserResponse registerUser(UserRequest userRequest) {
@@ -29,16 +34,40 @@ public class UserServiceImpl implements UserService {
         {
             if(!isPhoneNumberExist(userRequest.getPhoneNumber()))
             {
-                Users users = userRequest.toUsers();
-                users.setPassword(EncoderConfiguration.encrypt(users.getPassword()));
-                userRepository.saveAndFlush(users);
-                return UserResponse.builder()
-                        .userId(users.getUserId())
-                        .name(users.getName())
-                        .email(users.getEmail())
-                        .phoneNumber(users.getPhoneNumber())
-                        .userRoles(users.getUserRoles())
-                        .build();
+                try {
+                    Optional<Roles> roles = roleRepository.findById(userRequest.getRolesId());
+                    if(roles.isPresent())
+                    {
+                        Users users = Users.builder()
+                                .name(userRequest.getName())
+                                .email(userRequest.getEmail())
+                                .password(userRequest.getPassword())
+                                .phoneNumber(userRequest.getPhoneNumber())
+                                .userRoles(roles.get())
+                                .status(userRequest.getStatus())
+                                .build();
+                        users.setPassword(EncoderConfiguration.encrypt(users.getPassword()));
+                        userRepository.saveAndFlush(users);
+                        return UserResponse.builder()
+                                .userId(users.getUserId())
+                                .name(users.getName())
+                                .email(users.getEmail())
+                                .phoneNumber(users.getPhoneNumber())
+                                .rolesId(users.getUserRoles().getRoleId())
+                                .build();
+                    }
+                    else
+                    {
+                        return UserResponse.builder()
+                                .message("Roles id not exist")
+                                .build();
+                    }
+                }
+                catch (Exception ignore){
+                    return UserResponse.builder()
+                            .message("Create user failed")
+                            .build();
+                }
             }
             else
                 message = "Phone number already exist";
@@ -72,16 +101,22 @@ public class UserServiceImpl implements UserService {
                 else
                     message = "Phone number already exist";
             }
-            if (userUpdateRequest.getUserRoles() != null)
-                users.setUserRoles(userUpdateRequest.getUserRoles());
+            if (userUpdateRequest.getRolesId() != null)
+            {
+                Optional<Roles> roles = roleRepository.findById(userUpdateRequest.getRolesId());
+                if(roles.isPresent())
+                    users.setUserRoles(roles.get());
+                else
+                    message = "Role with this id doesnt exist";
+            }
             userRepository.saveAndFlush(users);
             return UserResponse.builder()
                     .userId(users.getUserId())
                     .name(users.getName())
                     .email(users.getEmail())
                     .phoneNumber(users.getPhoneNumber())
+                    .rolesId(users.getUserRoles().getRoleId())
                     .message(message)
-                    .userRoles(users.getUserRoles())
                     .build();
         } else {
             throw new RuntimeException("User with id: " + userId + " not found");
@@ -114,7 +149,7 @@ public class UserServiceImpl implements UserService {
                     .name(users.getName())
                     .email(users.getEmail())
                     .phoneNumber(users.getPhoneNumber())
-                    .userRoles(users.getUserRoles())
+                    .rolesId(users.getUserRoles().getRoleId())
                     .build();
         }
     }
@@ -151,7 +186,7 @@ public class UserServiceImpl implements UserService {
                     .name(user.getName())
                     .email(user.getEmail())
                     .phoneNumber(user.getPhoneNumber())
-                    .userRoles(user.getUserRoles())
+                    .rolesId(user.getUserRoles().getRoleId())
                     .build();
             allUserResponse.add(userResponse);
         }

@@ -8,6 +8,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Data
 public class ScheduleRequest {
@@ -25,19 +26,8 @@ public class ScheduleRequest {
     private Float price;
 
     @NotEmpty(message = "Film is required.")
-    private Films films;
+    private UUID filmsId;
 
     @NotEmpty(message = "Cinema Hall is required.")
-    private CinemaHall cinemaHall;
-
-    public Schedules toSchedule() {
-        return Schedules.builder()
-                .startTime(this.startTime)
-                .endTime(this.endTime)
-                .price(this.price)
-                .date(this.date)
-                .films(this.films)
-                .cinemaHall(this.cinemaHall)
-                .build();
-    }
+    private Integer cinemaHallId;
 }

@@ -10,8 +10,6 @@ import java.util.UUID;
 
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
-    @Query("SELECT b FROM Booking b where b.userBooking = (:userId)")
+    @Query(nativeQuery = true, value = "SELECT * FROM bookings b where b.user_id = :userId")
     List<Booking> findAllBookingByUser(@Param("userId") UUID userId);
-
-    Booking findBookingDetail(@Param("bookingId") UUID bookingId);
 }

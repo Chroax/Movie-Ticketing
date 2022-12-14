@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -15,16 +16,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class BookingDetails
 {
-    @EmbeddedId
-    BookingDetailsKey id;
+    @Id
+    @GeneratedValue
+    private UUID id;
 
     @ManyToOne
-    @MapsId("booking_id")
-    @JoinColumn(name = "booking_id")
-    Booking booking;
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
 
     @ManyToOne
-    @MapsId("seat_id")
-    @JoinColumn(name = "seat_id")
-    Seats seats;
+    @JoinColumn(name = "seat_id", nullable = false)
+    private Seats seats;
+
+    @Column(name = "status", nullable = false)
+    private Boolean status;
 }

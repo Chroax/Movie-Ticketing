@@ -1,8 +1,9 @@
 package com.binar.kampusmerdeka.service;
 
-import com.binar.kampusmerdeka.model.BookingDetails;
+import com.binar.kampusmerdeka.dto.BookingDetailRequest;
+import com.binar.kampusmerdeka.dto.BookingDetailResponse;
 
 public interface BookingDetailService {
 
-    BookingDetails createBookingDetail(BookingDetails bookingDetails);
+    BookingDetailResponse createBookingDetail(BookingDetailRequest bookingDetails);
 }

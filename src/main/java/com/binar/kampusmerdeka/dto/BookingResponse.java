@@ -16,8 +16,8 @@ public class BookingResponse {
 
     private UUID bookingId;
     private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
-    private Users userBooking;
-    private Schedules schedulesBook;
+    private UUID userId;
+    private UUID schedulesId;
+    private Integer totalSeat;
     private String message;
 }

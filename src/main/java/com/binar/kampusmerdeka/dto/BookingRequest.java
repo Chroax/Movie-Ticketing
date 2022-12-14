@@ -6,21 +6,18 @@ import com.binar.kampusmerdeka.model.Users;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.UUID;
 
 
 @Data
 public class BookingRequest {
 
     @NotEmpty(message = "User is required.")
-    private Users userBooking;
+    private UUID userId;
 
     @NotEmpty(message = "Schedule is required.")
-    private Schedules schedulesBook;
+    private UUID schedulesId;
 
-    public Booking toBooking() {
-        return Booking.builder()
-                .userBooking(this.userBooking)
-                .schedulesBook(this.schedulesBook)
-                .build();
-    }
+    @NotEmpty(message = "Total seat is required.")
+    private Integer totalSeat;
 }
