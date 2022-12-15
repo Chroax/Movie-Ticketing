@@ -1,6 +1,5 @@
 package com.binar.kampusmerdeka.service.impl;
 
-import com.binar.kampusmerdeka.config.EncoderConfiguration;
 import com.binar.kampusmerdeka.dto.UserRequest;
 import com.binar.kampusmerdeka.dto.UserResponse;
 import com.binar.kampusmerdeka.dto.UserUpdateRequest;

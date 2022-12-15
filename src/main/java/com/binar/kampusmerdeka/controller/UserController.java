@@ -285,21 +285,7 @@ public class UserController
             boolean isEmailValid = EmailValidator.getInstance().isValid(userUpdateRequest.getEmail());
 
             if(isEmailValid)
-            {
-                UserResponse userResponse = userService.updateUser(userUpdateRequest, userId);
-
-                if(userResponse.getMessage() != null)
-                {
-                    messageModel.setStatus(HttpStatus.CONFLICT.value());
-                    messageModel.setMessage(userResponse.getMessage());
-                }
-                else
-                {
-                    messageModel.setStatus(HttpStatus.OK.value());
-                    messageModel.setMessage("Update user with id : " + userId);
-                    messageModel.setData(userResponse);
-                }
-            }
+                updateUserMessage(userId, userUpdateRequest, messageModel);
             else
             {
                 messageModel.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -307,23 +293,25 @@ public class UserController
             }
         }
         else
-        {
-            UserResponse userResponse = userService.updateUser(userUpdateRequest, userId);
-
-            if(userResponse.getMessage() != null)
-            {
-                messageModel.setStatus(HttpStatus.CONFLICT.value());
-                messageModel.setMessage(userResponse.getMessage());
-            }
-            else
-            {
-                messageModel.setStatus(HttpStatus.OK.value());
-                messageModel.setMessage("Update user with id : " + userId);
-                messageModel.setData(userResponse);
-            }
-        }
+            updateUserMessage(userId, userUpdateRequest, messageModel);
 
         return ResponseEntity.ok().body(messageModel);
+    }
+
+    private void updateUserMessage(@PathVariable UUID userId, @RequestBody UserUpdateRequest userUpdateRequest, MessageModel messageModel) {
+        UserResponse userResponse = userService.updateUser(userUpdateRequest, userId);
+
+        if(userResponse.getMessage() != null)
+        {
+            messageModel.setStatus(HttpStatus.CONFLICT.value());
+            messageModel.setMessage(userResponse.getMessage());
+        }
+        else
+        {
+            messageModel.setStatus(HttpStatus.OK.value());
+            messageModel.setMessage("Update user with id : " + userId);
+            messageModel.setData(userResponse);
+        }
     }
 
     @Operation(responses = {
