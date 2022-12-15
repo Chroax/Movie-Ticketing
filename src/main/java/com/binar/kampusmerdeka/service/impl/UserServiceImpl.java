@@ -3,6 +3,7 @@ package com.binar.kampusmerdeka.service.impl;
 import com.binar.kampusmerdeka.dto.UserRequest;
 import com.binar.kampusmerdeka.dto.UserResponse;
 import com.binar.kampusmerdeka.dto.UserUpdateRequest;
+import com.binar.kampusmerdeka.exception.NotFoundException;
 import com.binar.kampusmerdeka.model.Roles;
 import com.binar.kampusmerdeka.model.Users;
 import com.binar.kampusmerdeka.repository.RoleRepository;
@@ -32,9 +33,9 @@ public class UserServiceImpl implements UserService {
     public UserResponse registerUser(UserRequest userRequest) {
         String message;
 
-        if(!isUserExist(userRequest.getEmail()))
+        if(Boolean.FALSE.equals(isUserExist(userRequest.getEmail())))
         {
-            if(!isPhoneNumberExist(userRequest.getPhoneNumber()))
+            if(Boolean.FALSE.equals(isPhoneNumberExist(userRequest.getPhoneNumber())))
             {
                 try {
                     List<Integer> allRolesId = new ArrayList<>();
@@ -98,14 +99,14 @@ public class UserServiceImpl implements UserService {
                 users.setName(userUpdateRequest.getName());
             if (userUpdateRequest.getEmail() != null)
             {
-                if(!isUserExist(userUpdateRequest.getEmail()))
+                if(Boolean.FALSE.equals(isUserExist(userUpdateRequest.getEmail())))
                     users.setEmail(userUpdateRequest.getEmail());
                 else
                     message = "Email already exist";
             }
             if (userUpdateRequest.getPhoneNumber() != null)
             {
-                if(!isPhoneNumberExist(userUpdateRequest.getPhoneNumber()))
+                if(Boolean.FALSE.equals(isPhoneNumberExist(userUpdateRequest.getPhoneNumber())))
                     users.setPhoneNumber(userUpdateRequest.getPhoneNumber());
                 else
                     message = "Phone number already exist";
@@ -135,7 +136,7 @@ public class UserServiceImpl implements UserService {
                     .message(message)
                     .build();
         } else {
-            throw new RuntimeException("User with id: " + userId + " not found");
+            throw new NotFoundException("User with id: " + userId + " not found");
         }
     }
 
@@ -157,7 +158,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse searchUserById(UUID userId) {
         Optional<Users> isUsers = userRepository.findById(userId);
         if (isUsers.isEmpty()) {
-            throw new RuntimeException("User with id: " + userId + " not found");
+            throw new NotFoundException("User with id: " + userId + " not found");
         } else {
             Users users = isUsers.get();
             return UserResponse.builder()

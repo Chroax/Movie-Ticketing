@@ -1,5 +1,6 @@
 package com.binar.kampusmerdeka.config;
 
+import com.binar.kampusmerdeka.exception.NotFoundException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -29,7 +30,7 @@ public class FirebaseConfiguration {
                 FirebaseApp.initializeApp(options);
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new NotFoundException(e.getMessage());
         }
     }
 }

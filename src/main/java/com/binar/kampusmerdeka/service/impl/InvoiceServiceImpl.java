@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,7 +43,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public ByteArrayInputStream generateInvoice(UUID bookingId) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        DecimalFormat indonesiaCurrency = (DecimalFormat) DecimalFormat.getNumberInstance();
+        DecimalFormat indonesiaCurrency = (DecimalFormat) NumberFormat.getNumberInstance();
         Optional<Booking> booking = bookingRepository.findById(bookingId);
 
         if(booking.isPresent())
@@ -221,7 +221,8 @@ public class InvoiceServiceImpl implements InvoiceService {
                 document.add(closingParagraph);
 
                 document.close();
-            }catch (DocumentException ignored) {
+            }catch (DocumentException e) {
+                return null;
             }
         }
         return new ByteArrayInputStream(out.toByteArray());

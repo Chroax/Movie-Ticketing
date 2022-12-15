@@ -36,20 +36,12 @@ public class BookingDetailServiceImpl implements BookingDetailService {
                         .status(bookingDetailRequest.getStatus())
                         .build();
 
-                try {
-                    bookingDetailsRepository.saveAndFlush(bookingDetails);
-                    return BookingDetailResponse.builder()
-                            .bookingId(bookingDetails.getBooking().getBookingId())
-                            .seatId(bookingDetails.getSeats().getSeatId())
-                            .status(bookingDetails.getStatus())
-                            .build();
-                }
-                catch(Exception exception)
-                {
-                    return BookingDetailResponse.builder()
-                            .message("Booking details already exist")
-                            .build();
-                }
+                bookingDetailsRepository.saveAndFlush(bookingDetails);
+                return BookingDetailResponse.builder()
+                        .bookingId(bookingDetails.getBooking().getBookingId())
+                        .seatId(bookingDetails.getSeats().getSeatId())
+                        .status(bookingDetails.getStatus())
+                        .build();
             }
             else
             {

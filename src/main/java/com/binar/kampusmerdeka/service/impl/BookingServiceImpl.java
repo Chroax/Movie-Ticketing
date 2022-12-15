@@ -37,22 +37,15 @@ public class BookingServiceImpl implements BookingService {
                         .totalSeat(bookingRequest.getTotalSeat())
                         .build();
 
-                try {
-                    bookingRepository.saveAndFlush(booking);
-                    return BookingResponse.builder()
-                            .bookingId(booking.getBookingId())
-                            .createdAt(booking.getCreatedAt())
-                            .userId(booking.getUserBooking().getUserId())
-                            .schedulesId(booking.getSchedulesBook().getScheduleId())
-                            .totalSeat(booking.getTotalSeat())
-                            .build();
-                }
-                catch(Exception exception)
-                {
-                    return BookingResponse.builder()
-                            .message("Booking already exist")
-                            .build();
-                }
+                bookingRepository.saveAndFlush(booking);
+
+                return BookingResponse.builder()
+                        .bookingId(booking.getBookingId())
+                        .createdAt(booking.getCreatedAt())
+                        .userId(booking.getUserBooking().getUserId())
+                        .schedulesId(booking.getSchedulesBook().getScheduleId())
+                        .totalSeat(booking.getTotalSeat())
+                        .build();
             }
             else
             {

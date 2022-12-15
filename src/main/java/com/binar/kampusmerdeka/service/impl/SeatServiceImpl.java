@@ -35,20 +35,12 @@ public class SeatServiceImpl implements SeatService {
                         .seatCinemaHall(cinemaHall.get())
                         .build();
 
-                try {
-                    seatRepository.save(seats);
-                    return SeatResponse.builder()
-                            .seatId(seats.getSeatId())
-                            .seatNumber(seats.getSeatNumber())
-                            .seatCinemaHall(seats.getSeatCinemaHall().getCinemaHallId())
-                            .build();
-                }
-                catch(Exception exception)
-                {
-                    return SeatResponse.builder()
-                            .message("Role already exist")
-                            .build();
-                }
+                seatRepository.save(seats);
+                return SeatResponse.builder()
+                        .seatId(seats.getSeatId())
+                        .seatNumber(seats.getSeatNumber())
+                        .seatCinemaHall(seats.getSeatCinemaHall().getCinemaHallId())
+                        .build();
             }
             else
             {

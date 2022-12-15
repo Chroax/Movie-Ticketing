@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class SchedulesServiceImpl implements ScheduleService {
@@ -42,25 +41,17 @@ public class SchedulesServiceImpl implements ScheduleService {
                         .cinemaHall(cinemaHall.get())
                         .films(films.get())
                         .build();
+                schedulesRepository.save(schedules);
 
-                try {
-                    schedulesRepository.save(schedules);
-                    return ScheduleResponse.builder()
-                            .scheduleId(schedules.getScheduleId())
-                            .startTime(schedules.getStartTime())
-                            .endTime(schedules.getEndTime())
-                            .price(schedules.getPrice())
-                            .date(schedules.getDate())
-                            .cinemaHallId(schedules.getCinemaHall().getCinemaHallId())
-                            .filmsId(schedules.getFilms().getFilmId())
-                            .build();
-                }
-                catch(Exception exception)
-                {
-                    return ScheduleResponse.builder()
-                            .message("Schedule already exist")
-                            .build();
-                }
+                return ScheduleResponse.builder()
+                        .scheduleId(schedules.getScheduleId())
+                        .startTime(schedules.getStartTime())
+                        .endTime(schedules.getEndTime())
+                        .price(schedules.getPrice())
+                        .date(schedules.getDate())
+                        .cinemaHallId(schedules.getCinemaHall().getCinemaHallId())
+                        .filmsId(schedules.getFilms().getFilmId())
+                        .build();
             }
             else
             {

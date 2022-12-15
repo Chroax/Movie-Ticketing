@@ -2,6 +2,7 @@ package com.binar.kampusmerdeka.service.impl;
 
 import com.binar.kampusmerdeka.dto.RoleRequest;
 import com.binar.kampusmerdeka.dto.RoleResponse;
+import com.binar.kampusmerdeka.exception.NotFoundException;
 import com.binar.kampusmerdeka.model.Roles;
 import com.binar.kampusmerdeka.repository.RoleRepository;
 import com.binar.kampusmerdeka.service.RoleService;
@@ -58,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
             }
         }
         else {
-            throw new RuntimeException("Roles with id: " + roleId + " not found");
+            throw new NotFoundException("Roles with id: " + roleId + " not found");
         }
     }
 

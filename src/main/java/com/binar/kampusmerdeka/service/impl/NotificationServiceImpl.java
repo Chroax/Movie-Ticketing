@@ -55,7 +55,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public String deleteNotification(String title) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(COLLECTION_NAME).document(title).delete();
+        dbFirestore.collection(COLLECTION_NAME).document(title).delete();
 
         return "Document with notification ID : " + title + " has been deleted successfully";
     }

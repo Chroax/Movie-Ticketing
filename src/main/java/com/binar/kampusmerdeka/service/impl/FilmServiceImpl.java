@@ -3,6 +3,7 @@ package com.binar.kampusmerdeka.service.impl;
 import com.binar.kampusmerdeka.dto.FilmRequest;
 import com.binar.kampusmerdeka.dto.FilmResponse;
 import com.binar.kampusmerdeka.dto.FilmUpdateRequest;
+import com.binar.kampusmerdeka.exception.NotFoundException;
 import com.binar.kampusmerdeka.model.Films;
 import com.binar.kampusmerdeka.repository.FilmRepository;
 import com.binar.kampusmerdeka.service.FilmService;
@@ -48,7 +49,7 @@ public class FilmServiceImpl implements FilmService
     public FilmResponse searchFilmById(UUID filmId) {
         Optional<Films> isFilms = filmRepository.findById(filmId);
         if (isFilms.isEmpty()) {
-            throw new RuntimeException("Film with id: " + filmId + " not found");
+            throw new NotFoundException("Film with id: " + filmId + " not found");
         } else {
             Films films = isFilms.get();
             return FilmResponse.builder()
@@ -107,7 +108,7 @@ public class FilmServiceImpl implements FilmService
                     .releaseDate(films.getReleaseDate())
                     .build();
         } else {
-            throw new RuntimeException("Film with id: " + filmId + " not found");
+            throw new NotFoundException("Film with id: " + filmId + " not found");
         }
     }
 
