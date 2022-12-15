@@ -19,7 +19,6 @@ public class ScheduleController
 {
     private static final Logger log = LoggerFactory.getLogger(ScheduleController.class);
 
-
     @Autowired
     ScheduleService scheduleService;
 

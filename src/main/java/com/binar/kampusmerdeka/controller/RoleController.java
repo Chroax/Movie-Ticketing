@@ -24,7 +24,6 @@ public class RoleController
 {
     private static final Logger log = LoggerFactory.getLogger(RoleController.class);
 
-
     @Autowired
     RoleService roleService;
 
