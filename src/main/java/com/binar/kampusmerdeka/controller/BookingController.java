@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/booking", produces = {"application/json"})
 public class BookingController {
 
-    private final static Logger log = LoggerFactory.getLogger(BookingController.class);
+    private static final Logger log = LoggerFactory.getLogger(BookingController.class);
 
     @Autowired
     BookingService bookingService;

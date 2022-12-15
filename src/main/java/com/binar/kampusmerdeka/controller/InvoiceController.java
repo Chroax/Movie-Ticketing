@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequestMapping("/invoice")
 public class InvoiceController {
 
-    private final static Logger log = LoggerFactory.getLogger(InvoiceController.class);
+    private static final Logger log = LoggerFactory.getLogger(InvoiceController.class);
 
 
     @Autowired

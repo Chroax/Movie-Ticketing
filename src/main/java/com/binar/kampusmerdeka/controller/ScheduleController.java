@@ -12,13 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/schedule", produces = {"application/json"})
 public class ScheduleController
 {
-    private final static Logger log = LoggerFactory.getLogger(ScheduleController.class);
+    private static final Logger log = LoggerFactory.getLogger(ScheduleController.class);
 
 
     @Autowired

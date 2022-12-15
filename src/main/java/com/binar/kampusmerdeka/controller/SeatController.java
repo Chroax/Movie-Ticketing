@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/seat", produces = {"application/json"})
 public class SeatController {
-    private final static Logger log = LoggerFactory.getLogger(SeatController.class);
+    private static final Logger log = LoggerFactory.getLogger(SeatController.class);
 
     @Autowired
     SeatService seatService;
@@ -28,17 +28,18 @@ public class SeatController {
             @ApiResponse(responseCode = "200", content = @Content(examples = {
                     @ExampleObject(name = "Create seat",
                             description = "Pastikan cinema hall id valid.",
-                            value = "{\n"
-                                    + "  \"responseCode\": 200,\n"
-                                    + "  \"responseMessage\": \"Register new seat\",\n"
-                                    + "  \"data\": [\n"
-                                    + "    {\n"
-                                    + "      \"seat_id\": 1,\n"
-                                    + "      \"seat_number\": A01,\n"
-                                    + "      \"cinema_hall_id\": \"1\"\n"
-                                    + "    }\n"
-                                    + "  ]\n"
-                                    + "}")
+                            value = """
+                                    {
+                                    responseCode : 200
+                                      "responseMessage": "Register new seat",
+                                      "data": [
+                                        {
+                                          "seat_id": 1,
+                                          "seat_number": A01,
+                                          "cinema_hall_id": "1"
+                                        }
+                                      ]
+                                    }""")
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
@@ -68,22 +69,23 @@ public class SeatController {
             @ApiResponse(responseCode = "200", content = @Content(examples = {
                     @ExampleObject(name = "Get all cinema hall seat",
                             description = "Pastikan cinema hall id valid.",
-                            value = "{\n"
-                                    + "  \"responseCode\": 200,\n"
-                                    + "  \"responseMessage\": \"Register new seat\",\n"
-                                    + "  \"data\": [\n"
-                                    + "    {\n"
-                                    + "      \"seat_id\": 1,\n"
-                                    + "      \"seat_number\": A01,\n"
-                                    + "      \"cinema_hall_id\": \"1\"\n"
-                                    + "    },\n"
-                                    + "    {\n"
-                                    + "      \"seat_id\": 2,\n"
-                                    + "      \"seat_number\": A02,\n"
-                                    + "      \"cinema_hall_id\": \"1\"\n"
-                                    + "    }\n"
-                                    + "  ]\n"
-                                    + "}")
+                            value = """
+                                    {
+                                    responseCode : 200
+                                      "responseMessage": "Register new seat",
+                                      "data": [
+                                        {
+                                          "seat_id": 1,
+                                          "seat_number": A01,
+                                          "cinema_hall_id": "1"
+                                        },
+                                        {
+                                          "seat_id": 2,
+                                          "seat_number": A02,
+                                          "cinema_hall_id": "1"
+                                        }
+                                      ]
+                                    }""")
             }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @GetMapping("/cinema-hall/{cinemaHallId}")
     public ResponseEntity<MessageModel> getAllSeatByCinemaHall(@PathVariable Integer cinemaHallId) {

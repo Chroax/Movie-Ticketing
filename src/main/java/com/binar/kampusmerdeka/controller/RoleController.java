@@ -22,27 +22,13 @@ import java.util.List;
 @RequestMapping(value = "/role", produces = {"application/json"})
 public class RoleController
 {
-    private final static Logger log = LoggerFactory.getLogger(RoleController.class);
+    private static final Logger log = LoggerFactory.getLogger(RoleController.class);
 
 
     @Autowired
     RoleService roleService;
 
-    @Operation(responses = {
-            @ApiResponse(responseCode = "200", content = @Content(examples = {
-                    @ExampleObject(name = "Add Role",
-                            description = "Menambahkan role baru",
-                            value = "{\n"
-                                    + "  \"responseCode\": 200,\n"
-                                    + "  \"responseMessage\": \"Register new role\",\n"
-                                    + "  \"data\": [\n"
-                                    + "    {\n"
-                                    + "      \"role_id\": 1,\n"
-                                    + "      \"role_name\": ADMIN\n"
-                                    + "    }\n"
-                                    + "  ]\n"
-                                    + "}")
-            }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
+
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<MessageModel> createRole(@RequestBody RoleRequest roleRequest)
@@ -68,25 +54,6 @@ public class RoleController
         return ResponseEntity.ok().body(messageModel);
     }
 
-    @Operation(responses = {
-            @ApiResponse(responseCode = "200", content = @Content(examples = {
-                    @ExampleObject(name = "Add Role",
-                            description = "Menambahkan role baru",
-                            value = "{\n"
-                                    + "  \"responseCode\": 200,\n"
-                                    + "  \"responseMessage\": \"Success get all role\",\n"
-                                    + "  \"data\": [\n"
-                                    + "    {\n"
-                                    + "      \"role_id\": 1,\n"
-                                    + "      \"role_name\": ADMIN\n"
-                                    + "    }\n"
-                                    + "    {\n"
-                                    + "      \"role_id\": 2,\n"
-                                    + "      \"role_name\": CUSTOMER\n"
-                                    + "    },\n"
-                                    + "  ]\n"
-                                    + "}")
-            }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
     @GetMapping("/get-all")
     public ResponseEntity<MessageModel> getAllRole()
     {
@@ -106,21 +73,7 @@ public class RoleController
         return ResponseEntity.ok().body(messageModel);
     }
 
-    @Operation(responses = {
-            @ApiResponse(responseCode = "200", content = @Content(examples = {
-                    @ExampleObject(name = "Update Role",
-                            description = "Melakukan update role",
-                            value = "{\n"
-                                    + "  \"responseCode\": 200,\n"
-                                    + "  \"responseMessage\": \"SUpdate role with id : 1\",\n"
-                                    + "  \"data\": [\n"
-                                    + "    {\n"
-                                    + "      \"role_id\": 1,\n"
-                                    + "      \"role_name\": ADMIN\n"
-                                    + "    }\n"
-                                    + "  ]\n"
-                                    + "}")
-            }, mediaType = MediaType.APPLICATION_JSON_VALUE))})
+
     @PutMapping("/update/{roleId}")
     public ResponseEntity<MessageModel> updateRole(@PathVariable Integer roleId, @RequestBody RoleRequest roleRequest)
     {
@@ -155,7 +108,7 @@ public class RoleController
     {
         MessageModel messageModel = new MessageModel();
         Boolean deleteRole = roleService.deleteRole(roleId);
-        if(deleteRole)
+        if(Boolean.TRUE.equals(deleteRole))
         {
             messageModel.setMessage("Success delete role by id : " + roleId);
             messageModel.setStatus(HttpStatus.OK.value());

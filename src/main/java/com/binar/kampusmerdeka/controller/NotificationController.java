@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/notification")
 public class NotificationController {
 
-    private final static Logger log = LoggerFactory.getLogger(NotificationController.class);
+    private static final Logger log = LoggerFactory.getLogger(NotificationController.class);
 
     @Autowired
     private NotificationService notificationService;
