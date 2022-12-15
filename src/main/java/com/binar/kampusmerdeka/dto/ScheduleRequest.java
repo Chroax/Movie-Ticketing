@@ -1,5 +1,6 @@
 package com.binar.kampusmerdeka.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -8,6 +9,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
 public class ScheduleRequest {
 
     @NotEmpty(message = "Start Time is required.")

@@ -25,7 +25,6 @@ public class InvoiceController {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceController.class);
 
-
     @Autowired
     InvoiceService invoiceService;
 

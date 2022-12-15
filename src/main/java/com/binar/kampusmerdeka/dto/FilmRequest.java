@@ -1,12 +1,14 @@
 package com.binar.kampusmerdeka.dto;
 
 import com.binar.kampusmerdeka.model.Films;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
 public class FilmRequest {
 
     @NotEmpty(message = "Film name is required.")
